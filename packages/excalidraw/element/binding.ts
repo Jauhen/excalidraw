@@ -1375,8 +1375,7 @@ export const findFocusPointForRectangulars = (
     | ExcalidrawDiamondElement
     | ExcalidrawTextElement
     | ExcalidrawIframeLikeElement
-    | ExcalidrawFrameLikeElement
-    | ExcalidrawEuclidElement,
+    | ExcalidrawFrameLikeElement,
   // Between -1 and 1 for how far away should the focus point be relative
   // to the size of the element. Sign determines orientation.
   relativeDistance: number,

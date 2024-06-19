@@ -468,7 +468,8 @@ export const _generateElementShape = (
     case "frame":
     case "magicframe":
     case "text":
-    case "image": {
+    case "image":
+    case "euclidDot": {
       const shape: ElementShapes[typeof element.type] = null;
       // we return (and cache) `null` to make sure we don't regenerate
       // `element.canvas` on rerenders

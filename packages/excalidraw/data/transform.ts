@@ -592,9 +592,6 @@ export const convertToExcalidrawElements = (
         });
         break;
       }
-      case "euclid":
-        excalidrawElement = EuclidDotElement.create(element);
-        break;
       case "image": {
         excalidrawElement = newImageElement({
           width: element?.width || DEFAULT_DIMENSION,
