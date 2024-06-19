@@ -184,7 +184,8 @@ export const isExcalidrawElement = (
     case "frame":
     case "magicframe":
     case "image":
-    case "selection": {
+    case "selection":
+    case "euclidDot": {
       return true;
     }
     default: {

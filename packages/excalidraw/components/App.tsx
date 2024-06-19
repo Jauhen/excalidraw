@@ -4502,6 +4502,7 @@ class App extends React.Component<AppProps, AppState> {
       case "iframe":
       case "text":
       case "selection":
+      case "euclidDot":
         return getPolygonShape(element);
       case "arrow":
       case "line": {
@@ -5939,7 +5940,9 @@ class App extends React.Component<AppProps, AppState> {
       return;
     }
 
-    if (this.state.activeTool.type === "text") {
+    if (this.state.activeTool.type === "text" ||
+        this.state.activeTool.type === "euclidDot"
+    ) {
       this.handleTextOnPointerDown(event, pointerDownState);
     } else if (
       this.state.activeTool.type === "arrow" ||

@@ -37,6 +37,7 @@ import type {
   ExcalidrawMagicFrameElement,
   ExcalidrawSelectionElement,
   ExcalidrawTextElement,
+  ExcalidrawEuclidDotElement,
   FileId,
   FontFamilyValues,
   NonDeletedSceneElementsMap,
@@ -184,6 +185,13 @@ export type ExcalidrawElementSkeleton =
       y: number;
       id?: ExcalidrawTextElement["id"];
     } & Partial<ExcalidrawTextElement>)
+  | ({
+      type: "euclidDot";
+      text: string;
+      x: number;
+      y: number;
+      id?: ExcalidrawEuclidDotElement["id"];
+    } & Partial<ExcalidrawEuclidDotElement>)
   | ({
       type: Extract<ExcalidrawImageElement["type"], "image">;
       x: number;
@@ -566,6 +574,28 @@ export const convertToExcalidrawElements = (
         break;
       }
       case "text": {
+        const fontFamily = element?.fontFamily || DEFAULT_FONT_FAMILY;
+        const fontSize = element?.fontSize || DEFAULT_FONT_SIZE;
+        const lineHeight =
+          element?.lineHeight || getDefaultLineHeight(fontFamily);
+        const text = element.text ?? "";
+        const normalizedText = normalizeText(text);
+        const metrics = measureText(
+          normalizedText,
+          getFontString({ fontFamily, fontSize }),
+          lineHeight,
+        );
+
+        excalidrawElement = newTextElement({
+          width: metrics.width,
+          height: metrics.height,
+          fontFamily,
+          fontSize,
+          ...element,
+        });
+        break;
+      }
+      case "euclidDot": {
         const fontFamily = element?.fontFamily || DEFAULT_FONT_FAMILY;
         const fontSize = element?.fontSize || DEFAULT_FONT_SIZE;
         const lineHeight =

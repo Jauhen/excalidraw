@@ -169,7 +169,8 @@ export type ExcalidrawElement =
   | ExcalidrawFrameElement
   | ExcalidrawMagicFrameElement
   | ExcalidrawIframeElement
-  | ExcalidrawEmbeddableElement;
+  | ExcalidrawEmbeddableElement
+  | ExcalidrawEuclidDotElement;
 
 export type Ordered<TElement extends ExcalidrawElement> = TElement & {
   index: FractionalIndex;
@@ -207,6 +208,30 @@ export type ExcalidrawTextElement = _ExcalidrawElementBase &
     lineHeight: number & { _brand: "unitlessLineHeight" };
   }>;
 
+export type ExcalidrawEuclidDotElement = _ExcalidrawElementBase &
+  Readonly<{
+    type: "euclidDot";
+    fontSize: number;
+    fontFamily: FontFamilyValues;
+    text: string;
+    textAlign: TextAlign;
+    verticalAlign: VerticalAlign;
+    containerId: ExcalidrawGenericElement["id"] | null;
+    originalText: string;
+    /**
+     * If `true` the width will fit the text. If `false`, the text will
+     * wrap to fit the width.
+     *
+     * @default true
+     */
+    autoResize: boolean;
+    /**
+     * Unitless line height (aligned to W3C). To get line height in px, multiply
+     * with font size (using `getLineHeightInPx` helper).
+     */
+    lineHeight: number & { _brand: "unitlessLineHeight" };
+  }>;
+ 
 export type ExcalidrawBindableElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
@@ -216,7 +241,8 @@ export type ExcalidrawBindableElement =
   | ExcalidrawIframeElement
   | ExcalidrawEmbeddableElement
   | ExcalidrawFrameElement
-  | ExcalidrawMagicFrameElement;
+  | ExcalidrawMagicFrameElement
+  | ExcalidrawEuclidDotElement;
 
 export type ExcalidrawTextContainer =
   | ExcalidrawRectangleElement

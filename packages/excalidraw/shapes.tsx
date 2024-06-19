@@ -4,6 +4,7 @@ import {
   EllipseIcon,
   EraserIcon,
   FreedrawIcon,
+  EuclidDotIcon,
   ImageIcon,
   LineIcon,
   RectangleIcon,
@@ -83,6 +84,13 @@ export const SHAPES = [
     numericKey: KEYS["0"],
     fillable: false,
   },
+  {
+    icon: EuclidDotIcon,
+    value: "euclidDot",
+    key: [KEYS.D],
+    numericKey: KEYS["0"],
+    fillable: false,
+  }
 ] as const;
 
 export const findShapeByKey = (key: string) => {

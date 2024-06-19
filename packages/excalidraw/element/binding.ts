@@ -13,6 +13,7 @@ import type {
   ExcalidrawFreeDrawElement,
   ExcalidrawImageElement,
   ExcalidrawFrameLikeElement,
+  ExcalidrawEuclidDotElement,
   ExcalidrawIframeLikeElement,
   NonDeleted,
   ExcalidrawLinearElement,
@@ -856,6 +857,7 @@ const distanceToBindableElement = (
     case "embeddable":
     case "frame":
     case "magicframe":
+    case "euclidDot":
       return distanceToRectangle(element, point, elementsMap);
     case "diamond":
       return distanceToDiamond(element, point, elementsMap);
@@ -871,7 +873,8 @@ const distanceToRectangle = (
     | ExcalidrawFreeDrawElement
     | ExcalidrawImageElement
     | ExcalidrawIframeLikeElement
-    | ExcalidrawFrameLikeElement,
+    | ExcalidrawFrameLikeElement
+    | ExcalidrawEuclidDotElement,
   point: Point,
   elementsMap: ElementsMap,
 ): number => {
@@ -1089,6 +1092,7 @@ const determineFocusPoint = (
     case "embeddable":
     case "frame":
     case "magicframe":
+    case "euclidDot":
       point = findFocusPointForRectangulars(element, focus, adjecentPointRel);
       break;
     case "ellipse":
@@ -1144,6 +1148,7 @@ const getSortedElementLineIntersections = (
     case "embeddable":
     case "frame":
     case "magicframe":
+    case "euclidDot":
       const corners = getCorners(element);
       intersections = corners
         .flatMap((point, i) => {
@@ -1179,7 +1184,8 @@ const getCorners = (
     | ExcalidrawDiamondElement
     | ExcalidrawTextElement
     | ExcalidrawIframeLikeElement
-    | ExcalidrawFrameLikeElement,
+    | ExcalidrawFrameLikeElement
+    | ExcalidrawEuclidDotElement,
   scale: number = 1,
 ): GA.Point[] => {
   const hx = (scale * element.width) / 2;
@@ -1192,6 +1198,7 @@ const getCorners = (
     case "embeddable":
     case "frame":
     case "magicframe":
+    case "euclidDot":
       return [
         GA.point(hx, hy),
         GA.point(hx, -hy),
@@ -1341,7 +1348,8 @@ const findFocusPointForRectangulars = (
     | ExcalidrawDiamondElement
     | ExcalidrawTextElement
     | ExcalidrawIframeLikeElement
-    | ExcalidrawFrameLikeElement,
+    | ExcalidrawFrameLikeElement
+    | ExcalidrawEuclidDotElement,
   // Between -1 and 1 for how far away should the focus point be relative
   // to the size of the element. Sign determines orientation.
   relativeDistance: number,

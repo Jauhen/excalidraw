@@ -27,6 +27,7 @@ import type {
   ExcalidrawRectangleElement,
   ExcalidrawSelectionElement,
   ExcalidrawTextElement,
+  ExcalidrawEuclidDotElement
 } from "../../excalidraw/element/types";
 import { angleToDegrees, close, pointAdd, pointRotate } from "./geometry";
 import { pointsOnBezierCurves } from "points-on-curve";
@@ -99,7 +100,8 @@ type RectangularElement =
   | ExcalidrawImageElement
   | ExcalidrawIframeElement
   | ExcalidrawTextElement
-  | ExcalidrawSelectionElement;
+  | ExcalidrawSelectionElement
+  | ExcalidrawEuclidDotElement;
 
 // polygon
 export const getPolygonShape = (

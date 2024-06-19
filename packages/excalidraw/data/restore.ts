@@ -77,6 +77,7 @@ export const AllowedExcalidrawActiveTools: Record<
   hand: true,
   laser: false,
   magicframe: false,
+  euclidDot: true,
 };
 
 export type RestoredDataState = {

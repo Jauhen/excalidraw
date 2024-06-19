@@ -242,6 +242,22 @@ export class API {
         element.width = width;
         element.height = height;
         break;
+      case "euclidDot": {
+        const fontSize = rest.fontSize ?? appState.currentItemFontSize;
+        const fontFamily = rest.fontFamily ?? appState.currentItemFontFamily;
+        element = newTextElement({
+          ...base,
+          text: rest.text || "test",
+          fontSize,
+          fontFamily,
+          textAlign: rest.textAlign ?? appState.currentItemTextAlign,
+          verticalAlign: rest.verticalAlign ?? DEFAULT_VERTICAL_ALIGN,
+          containerId: rest.containerId ?? undefined,
+        });
+        element.width = width;
+        element.height = height;
+        }
+        break;
       case "freedraw":
         element = newFreeDrawElement({
           type: type as "freedraw",

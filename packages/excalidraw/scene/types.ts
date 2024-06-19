@@ -137,4 +137,5 @@ export type ElementShapes = {
   image: null;
   frame: null;
   magicframe: null;
+  euclidDot: null;
 };
