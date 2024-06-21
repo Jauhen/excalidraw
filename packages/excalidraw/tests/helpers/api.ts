@@ -32,6 +32,7 @@ import { isLinearElementType } from "../../element/typeChecks";
 import type { Mutable } from "../../utility-types";
 import { assertNever } from "../../utils";
 import { createTestHook } from "../../components/App";
+import { EuclidDotElement } from "../../element/euclid/dot";
 
 const readFile = util.promisify(fs.readFile);
 // so that window.h is available when App.tsx is not imported as well.
@@ -242,21 +243,22 @@ export class API {
         element.width = width;
         element.height = height;
         break;
-      case "euclidDot": {
-        const fontSize = rest.fontSize ?? appState.currentItemFontSize;
-        const fontFamily = rest.fontFamily ?? appState.currentItemFontFamily;
-        element = newTextElement({
-          ...base,
-          text: rest.text || "test",
-          fontSize,
-          fontFamily,
-          textAlign: rest.textAlign ?? appState.currentItemTextAlign,
-          verticalAlign: rest.verticalAlign ?? DEFAULT_VERTICAL_ALIGN,
-          containerId: rest.containerId ?? undefined,
-        });
-        element.width = width;
-        element.height = height;
-        }
+      case "euclid":
+        element = EuclidDotElement.create2(
+          {
+            type,
+            id,
+            x,
+            y,
+            width,
+            height,
+            isDeleted,
+            groupIds,
+            ...rest,
+          },
+          base,
+          appState,
+        );
         break;
       case "freedraw":
         element = newFreeDrawElement({

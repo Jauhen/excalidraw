@@ -391,7 +391,7 @@ export const TOOL_TYPE = {
   magicframe: "magicframe",
   embeddable: "embeddable",
   laser: "laser",
-  euclidDot: "euclidDot",
+  euclid: "euclid",
 } as const;
 
 export const EDITOR_LS_KEYS = {

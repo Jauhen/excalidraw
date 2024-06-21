@@ -8,6 +8,11 @@ import type {
 } from "../constants";
 import type { MakeBrand, MarkNonNullable, ValueOf } from "../utility-types";
 import type { MagicCacheData } from "../data/magic";
+import type { GeometricShape } from "../../utils/geometry/shape";
+import type * as GA from "../ga";
+import type { Drawable } from "roughjs/bin/core";
+import type { RoughGenerator } from "roughjs/bin/generator";
+import type { EmbedsValidationStatus } from "../types";
 
 export type ChartType = "bar" | "line";
 export type FillStyle = "hachure" | "cross-hatch" | "solid" | "zigzag";
@@ -170,7 +175,7 @@ export type ExcalidrawElement =
   | ExcalidrawMagicFrameElement
   | ExcalidrawIframeElement
   | ExcalidrawEmbeddableElement
-  | ExcalidrawEuclidDotElement;
+  | ExcalidrawEuclidElement;
 
 export type Ordered<TElement extends ExcalidrawElement> = TElement & {
   index: FractionalIndex;
@@ -208,9 +213,9 @@ export type ExcalidrawTextElement = _ExcalidrawElementBase &
     lineHeight: number & { _brand: "unitlessLineHeight" };
   }>;
 
-export type ExcalidrawEuclidDotElement = _ExcalidrawElementBase &
+export type ExcalidrawEuclidElement = _ExcalidrawElementBase &
   Readonly<{
-    type: "euclidDot";
+    type: "euclid";
     fontSize: number;
     fontFamily: FontFamilyValues;
     text: string;
@@ -230,8 +235,28 @@ export type ExcalidrawEuclidDotElement = _ExcalidrawElementBase &
      * with font size (using `getLineHeightInPx` helper).
      */
     lineHeight: number & { _brand: "unitlessLineHeight" };
-  }>;
- 
+  }> & {
+    getShape: () => GeometricShape;
+    distanceToRectangle(point: Point, elementsMap: ElementsMap): number;
+    findFocusPointForRectangulars(
+      relativeDistance: number,
+      point: GA.Point,
+    ): GA.Point;
+    getSortedElementLineIntersections(line: GA.Line, gap: number): GA.Point[];
+    generateElementShape(
+      generator: RoughGenerator,
+      {
+        isExporting,
+        canvasBackgroundColor,
+        embedsValidationStatus,
+      }: {
+        isExporting: boolean;
+        canvasBackgroundColor: string;
+        embedsValidationStatus: EmbedsValidationStatus | null;
+      },
+    ): Drawable | Drawable[] | null;
+  };
+
 export type ExcalidrawBindableElement =
   | ExcalidrawRectangleElement
   | ExcalidrawDiamondElement
@@ -242,7 +267,7 @@ export type ExcalidrawBindableElement =
   | ExcalidrawEmbeddableElement
   | ExcalidrawFrameElement
   | ExcalidrawMagicFrameElement
-  | ExcalidrawEuclidDotElement;
+  | ExcalidrawEuclidElement;
 
 export type ExcalidrawTextContainer =
   | ExcalidrawRectangleElement

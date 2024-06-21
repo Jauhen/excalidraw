@@ -467,12 +467,18 @@ export const _generateElementShape = (
     case "frame":
     case "magicframe":
     case "text":
-    case "image":
-    case "euclidDot": {
+    case "image": {
       const shape: ElementShapes[typeof element.type] = null;
       // we return (and cache) `null` to make sure we don't regenerate
       // `element.canvas` on rerenders
       return shape;
+    }
+    case "euclid": {
+      return element.generateElementShape(generator, {
+        isExporting,
+        canvasBackgroundColor,
+        embedsValidationStatus,
+      });
     }
     default: {
       assertNever(

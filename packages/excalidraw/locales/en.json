@@ -269,7 +269,7 @@
     "extraTools": "More tools",
     "mermaidToExcalidraw": "Mermaid to Excalidraw",
     "magicSettings": "AI settings",
-    "euclidDot": "Dot"
+    "euclid": "Euclid"
   },
   "element": {
     "rectangle": "Rectangle",
@@ -286,7 +286,7 @@
     "embeddable": "Web Embed",
     "selection": "Selection",
     "iframe": "IFrame",
-    "euclidDot": "Dot"
+    "euclid": "Euclid"
   },
   "headings": {
     "canvasActions": "Canvas actions",

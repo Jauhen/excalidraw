@@ -13,7 +13,7 @@ import type {
   ExcalidrawFreeDrawElement,
   ExcalidrawImageElement,
   ExcalidrawFrameLikeElement,
-  ExcalidrawEuclidDotElement,
+  ExcalidrawEuclidElement,
   ExcalidrawIframeLikeElement,
   NonDeleted,
   ExcalidrawLinearElement,
@@ -857,8 +857,9 @@ const distanceToBindableElement = (
     case "embeddable":
     case "frame":
     case "magicframe":
-    case "euclidDot":
       return distanceToRectangle(element, point, elementsMap);
+    case "euclid":
+      return element.distanceToRectangle(point, elementsMap);
     case "diamond":
       return distanceToDiamond(element, point, elementsMap);
     case "ellipse":
@@ -866,7 +867,7 @@ const distanceToBindableElement = (
   }
 };
 
-const distanceToRectangle = (
+export const distanceToRectangle = (
   element:
     | ExcalidrawRectangleElement
     | ExcalidrawTextElement
@@ -874,7 +875,7 @@ const distanceToRectangle = (
     | ExcalidrawImageElement
     | ExcalidrawIframeLikeElement
     | ExcalidrawFrameLikeElement
-    | ExcalidrawEuclidDotElement,
+    | ExcalidrawEuclidElement,
   point: Point,
   elementsMap: ElementsMap,
 ): number => {
@@ -1092,8 +1093,10 @@ const determineFocusPoint = (
     case "embeddable":
     case "frame":
     case "magicframe":
-    case "euclidDot":
       point = findFocusPointForRectangulars(element, focus, adjecentPointRel);
+      break;
+    case "euclid":
+      point = element.findFocusPointForRectangulars(focus, adjecentPointRel);
       break;
     case "ellipse":
       point = findFocusPointForEllipse(element, focus, adjecentPointRel);
@@ -1148,7 +1151,6 @@ const getSortedElementLineIntersections = (
     case "embeddable":
     case "frame":
     case "magicframe":
-    case "euclidDot":
       const corners = getCorners(element);
       intersections = corners
         .flatMap((point, i) => {
@@ -1161,6 +1163,9 @@ const getSortedElementLineIntersections = (
       break;
     case "ellipse":
       intersections = getEllipseIntersections(element, gap, line);
+      break;
+    case "euclid":
+      intersections = element.getSortedElementLineIntersections(line, gap);
       break;
   }
   if (intersections.length < 2) {
@@ -1185,7 +1190,7 @@ const getCorners = (
     | ExcalidrawTextElement
     | ExcalidrawIframeLikeElement
     | ExcalidrawFrameLikeElement
-    | ExcalidrawEuclidDotElement,
+    | ExcalidrawEuclidElement,
   scale: number = 1,
 ): GA.Point[] => {
   const hx = (scale * element.width) / 2;
@@ -1198,7 +1203,7 @@ const getCorners = (
     case "embeddable":
     case "frame":
     case "magicframe":
-    case "euclidDot":
+    case "euclid":
       return [
         GA.point(hx, hy),
         GA.point(hx, -hy),
@@ -1218,7 +1223,7 @@ const getCorners = (
 // Returns intersection of `line` with `segment`, with `segment` moved by
 // `gap` in its polar direction.
 // If intersection coincides with second segment point returns empty array.
-const intersectSegment = (
+export const intersectSegment = (
   line: GA.Line,
   segment: [GA.Point, GA.Point],
 ): GA.Point[] => {
@@ -1232,7 +1237,7 @@ const intersectSegment = (
   return [GAPoint.intersect(line, GALine.through(a, b))];
 };
 
-const offsetSegment = (
+export const offsetSegment = (
   segment: [GA.Point, GA.Point],
   distance: number,
 ): [GA.Point, GA.Point] => {
@@ -1274,7 +1279,7 @@ const getEllipseIntersections = (
   ];
 };
 
-const getCircleIntersections = (
+export const getCircleIntersections = (
   center: GA.Point,
   radius: number,
   line: GA.Line,
@@ -1341,7 +1346,7 @@ const findFocusPointForEllipse = (
   return GA.point(x, (-m * x - 1) / n);
 };
 
-const findFocusPointForRectangulars = (
+export const findFocusPointForRectangulars = (
   element:
     | ExcalidrawRectangleElement
     | ExcalidrawImageElement
@@ -1349,7 +1354,7 @@ const findFocusPointForRectangulars = (
     | ExcalidrawTextElement
     | ExcalidrawIframeLikeElement
     | ExcalidrawFrameLikeElement
-    | ExcalidrawEuclidDotElement,
+    | ExcalidrawEuclidElement,
   // Between -1 and 1 for how far away should the focus point be relative
   // to the size of the element. Sign determines orientation.
   relativeDistance: number,

@@ -4502,8 +4502,9 @@ class App extends React.Component<AppProps, AppState> {
       case "iframe":
       case "text":
       case "selection":
-      case "euclidDot":
         return getPolygonShape(element);
+      case "euclid":
+        return element.getShape();
       case "arrow":
       case "line": {
         const roughShape =
@@ -5940,9 +5941,10 @@ class App extends React.Component<AppProps, AppState> {
       return;
     }
 
-    if (this.state.activeTool.type === "text" ||
-        this.state.activeTool.type === "euclidDot"
-    ) {
+    if (this.state.activeTool.type === "text") {
+      this.handleTextOnPointerDown(event, pointerDownState);
+    } else if (this.state.activeTool.type === "euclid") {
+      // TODO(euclid)
       this.handleTextOnPointerDown(event, pointerDownState);
     } else if (
       this.state.activeTool.type === "arrow" ||

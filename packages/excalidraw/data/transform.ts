@@ -37,7 +37,7 @@ import type {
   ExcalidrawMagicFrameElement,
   ExcalidrawSelectionElement,
   ExcalidrawTextElement,
-  ExcalidrawEuclidDotElement,
+  ExcalidrawEuclidElement,
   FileId,
   FontFamilyValues,
   NonDeletedSceneElementsMap,
@@ -55,6 +55,7 @@ import {
 import { getSizeFromPoints } from "../points";
 import { randomId } from "../random";
 import { syncInvalidIndices } from "../fractionalIndex";
+import { EuclidDotElement } from "../element/euclid/dot";
 
 export type ValidLinearElement = {
   type: "arrow" | "line";
@@ -186,12 +187,12 @@ export type ExcalidrawElementSkeleton =
       id?: ExcalidrawTextElement["id"];
     } & Partial<ExcalidrawTextElement>)
   | ({
-      type: "euclidDot";
+      type: "euclid";
       text: string;
       x: number;
       y: number;
-      id?: ExcalidrawEuclidDotElement["id"];
-    } & Partial<ExcalidrawEuclidDotElement>)
+      id?: ExcalidrawEuclidElement["id"];
+    } & Partial<ExcalidrawEuclidElement>)
   | ({
       type: Extract<ExcalidrawImageElement["type"], "image">;
       x: number;
@@ -595,28 +596,9 @@ export const convertToExcalidrawElements = (
         });
         break;
       }
-      case "euclidDot": {
-        const fontFamily = element?.fontFamily || DEFAULT_FONT_FAMILY;
-        const fontSize = element?.fontSize || DEFAULT_FONT_SIZE;
-        const lineHeight =
-          element?.lineHeight || getDefaultLineHeight(fontFamily);
-        const text = element.text ?? "";
-        const normalizedText = normalizeText(text);
-        const metrics = measureText(
-          normalizedText,
-          getFontString({ fontFamily, fontSize }),
-          lineHeight,
-        );
-
-        excalidrawElement = newTextElement({
-          width: metrics.width,
-          height: metrics.height,
-          fontFamily,
-          fontSize,
-          ...element,
-        });
+      case "euclid":
+        excalidrawElement = EuclidDotElement.create(element);
         break;
-      }
       case "image": {
         excalidrawElement = newImageElement({
           width: element?.width || DEFAULT_DIMENSION,

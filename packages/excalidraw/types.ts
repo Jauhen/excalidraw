@@ -130,7 +130,7 @@ export type ToolType =
   | "magicframe"
   | "embeddable"
   | "laser"
-  | "euclidDot";
+  | "euclid";
 
 export type ElementOrToolType = ExcalidrawElementType | ToolType | "custom";
 
