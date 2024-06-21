@@ -51,8 +51,8 @@ import {
 import { getSizeFromPoints } from "../points";
 import { randomId } from "../random";
 import { syncInvalidIndices } from "../fractionalIndex";
-import { EuclidDotElement } from "../element/euclid/dot";
 import { getLineHeight } from "../fonts";
+import { EuclidDotElement } from "../element/euclid/dot";
 
 export type ValidLinearElement = {
   type: "arrow" | "line";
@@ -591,7 +591,6 @@ export const convertToExcalidrawElements = (
           ...element,
         });
         break;
-      }
       case "image": {
         excalidrawElement = newImageElement({
           width: element?.width || DEFAULT_DIMENSION,

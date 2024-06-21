@@ -369,17 +369,8 @@ export const ImageIcon = createIcon(
 // modified tabler-icons: point-filled
 export const EuclidIcon = createIcon(
   <g strokeWidth="1.25">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    <ellipse
-     cx="3.81"
-     cy="16.30"
-     fill="currentColor"
-     rx="3.33"
-     ry="3.24"/>
-  <path
-     fill="currentColor"
-     d="M 20,10.31 H 18.46 L 17.32,7.55 h -5.13 l -1.15,2.76 H 9.54 L 13.95,0 h 1.59 z M 16.71,6.33 14.71,1.58 12.76,6.33 h 3.95 z"
-     strokeWidth="0" />  
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+    <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
   </g>,
   modifiedTablerIconProps,
 );
