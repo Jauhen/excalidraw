@@ -25,7 +25,8 @@ export const hasStrokeWidth = (type: ElementOrToolType) =>
   type === "diamond" ||
   type === "freedraw" ||
   type === "arrow" ||
-  type === "line";
+  type === "line" ||
+  type === "euclid";
 
 export const hasStrokeStyle = (type: ElementOrToolType) =>
   type === "rectangle" ||
@@ -34,7 +35,8 @@ export const hasStrokeStyle = (type: ElementOrToolType) =>
   type === "ellipse" ||
   type === "diamond" ||
   type === "arrow" ||
-  type === "line";
+  type === "line" ||
+  type === "euclid";
 
 export const canChangeRoundness = (type: ElementOrToolType) =>
   type === "rectangle" ||

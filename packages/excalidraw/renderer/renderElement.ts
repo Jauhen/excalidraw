@@ -17,6 +17,7 @@ import {
   isArrowElement,
   hasBoundTextElement,
   isMagicFrameElement,
+  isEuclidElement,
 } from "../element/typeChecks";
 import { getElementAbsoluteCoords } from "../element/bounds";
 import type { RoughCanvas } from "roughjs/bin/canvas";
@@ -307,7 +308,8 @@ const drawElementOnCanvas = (
       break;
     }
     case "arrow":
-    case "line": {
+    case "line":
+    case "euclid": {
       context.lineJoin = "round";
       context.lineCap = "round";
 
@@ -363,7 +365,7 @@ const drawElementOnCanvas = (
       break;
     }
     default: {
-      if (isTextElement(element)) {
+      if (isTextElement(element) || isEuclidElement(element)) {
         const rtl = isRTL(element.text);
         const shouldTemporarilyAttach = rtl && !context.canvas.isConnected;
         if (shouldTemporarilyAttach) {
@@ -737,7 +739,8 @@ export const renderElement = (
     case "image":
     case "text":
     case "iframe":
-    case "embeddable": {
+    case "embeddable":
+    case "euclid": {
       // TODO investigate if we can do this in situ. Right now we need to call
       // beforehand because math helpers (such as getElementAbsoluteCoords)
       // rely on existing shapes

@@ -143,6 +143,7 @@ import {
   newEmbeddableElement,
   newMagicFrameElement,
   newIframeElement,
+  newEuclidDotElement,
 } from "../element/newElement";
 import {
   hasBoundTextElement,
@@ -162,6 +163,7 @@ import {
   isIframeLikeElement,
   isMagicFrameElement,
   isTextBindableContainer,
+  isEuclidElement,
 } from "../element/typeChecks";
 import type {
   ExcalidrawBindableElement,
@@ -437,6 +439,7 @@ import { getShortcutFromShortcutName } from "../actions/shortcuts";
 import { actionTextAutoResize } from "../actions/actionTextAutoResize";
 import { getVisibleSceneBounds } from "../element/bounds";
 import { isMaybeMermaidDefinition } from "../mermaid";
+import { EuclidDotElement } from "../element/euclid/dot";
 
 const AppContext = React.createContext<AppClassProperties>(null!);
 const AppPropsContext = React.createContext<AppProps>(null!);
@@ -5944,8 +5947,7 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.activeTool.type === "text") {
       this.handleTextOnPointerDown(event, pointerDownState);
     } else if (this.state.activeTool.type === "euclid") {
-      // TODO(euclid)
-      this.handleTextOnPointerDown(event, pointerDownState);
+      this.handleEuclidOnPointerDown(event, pointerDownState);
     } else if (
       this.state.activeTool.type === "arrow" ||
       this.state.activeTool.type === "line"
@@ -6750,6 +6752,59 @@ class App extends React.Component<AppProps, AppState> {
       });
     }
   };
+
+  private handleEuclidOnPointerDown = (
+    event: React.PointerEvent<HTMLElement>,
+    pointerDownState: PointerDownState,
+  ): void => {
+    console.log('New euclid element', event, pointerDownState);
+    // if we're currently still editing text, clicking outside
+    // should only finalize it, not create another (irrespective
+    // of state.activeTool.locked)
+    if (isEuclidElement(this.state.editingElement)) {
+      console.log("Continue to create element");
+      return;
+    }
+    let sceneX = pointerDownState.origin.x;
+    let sceneY = pointerDownState.origin.y;
+
+    const element = this.getElementAtPosition(sceneX, sceneY, {
+      includeBoundTextElement: true,
+    });
+
+    const newElement = newEuclidDotElement({
+      type: "euclid",
+      x: sceneX,
+      y: sceneY,
+      text: EuclidDotElement.getNextUnusedLetter(),
+      fontSize: this.state.currentItemFontSize,
+      strokeColor: this.state.currentItemStrokeColor,
+    });
+
+    this.scene.insertElement(newElement);
+    // // FIXME
+    // let container = this.getTextBindableContainerAtPosition(sceneX, sceneY);
+
+    // if (hasBoundTextElement(element)) {
+    //   container = element as ExcalidrawTextContainer;
+    //   sceneX = element.x + element.width / 2;
+    //   sceneY = element.y + element.height / 2;
+    // }
+    // this.startTextEditing({
+    //   sceneX,
+    //   sceneY,
+    //   insertAtParentCenter: !event.altKey,
+    //   container,
+    //   autoEdit: false,
+    // });
+
+    // resetCursor(this.interactiveCanvas);
+    // if (!this.state.activeTool.locked) {
+    //   this.setState({
+    //     activeTool: updateActiveTool(this.state, { type: "selection" }),
+    //   });
+    // }
+  }
 
   private handleFreeDrawElementOnPointerDown = (
     event: React.PointerEvent<HTMLElement>,

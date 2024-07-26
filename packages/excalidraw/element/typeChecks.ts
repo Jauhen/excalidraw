@@ -21,6 +21,7 @@ import type {
   ExcalidrawIframeLikeElement,
   ExcalidrawMagicFrameElement,
   ExcalidrawArrowElement,
+  ExcalidrawEuclidElement,
 } from "./types";
 
 export const isInitializedImageElement = (
@@ -58,8 +59,15 @@ export const isIframeLikeElement = (
 export const isTextElement = (
   element: ExcalidrawElement | null,
 ): element is ExcalidrawTextElement => {
-  return element != null && element.type === "text";
+  return element != null && 
+    (element.type === "text" || element.type === "euclid");
 };
+
+export const isEuclidElement = (
+  element: ExcalidrawElement | null,
+): element is ExcalidrawEuclidElement => {
+  return element != null && element.type === "euclid";
+}
 
 export const isFrameElement = (
   element: ExcalidrawElement | null,
@@ -128,7 +136,7 @@ export const isBindingElement = (
 export const isBindingElementType = (
   elementType: ElementOrToolType,
 ): boolean => {
-  return elementType === "arrow";
+  return elementType === "arrow" || elementType === "euclid";
 };
 
 export const isBindableElement = (

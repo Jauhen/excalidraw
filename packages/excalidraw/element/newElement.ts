@@ -47,6 +47,7 @@ import {
   VERTICAL_ALIGN,
 } from "../constants";
 import type { MarkOptional, Merge, Mutable } from "../utility-types";
+import { EuclidDotElement } from "./euclid/dot";
 
 export type ElementConstructorOpts = MarkOptional<
   Omit<ExcalidrawGenericElement, "id" | "type" | "isDeleted" | "updated">,
@@ -422,6 +423,40 @@ export const newImageElement = (
     scale: opts.scale ?? [1, 1],
   };
 };
+
+export const newEuclidDotElement = (
+  opts: {
+    type: EuclidDotElement["type"];
+    x: number;
+    y: number;
+    text: string;
+    originalText?: string;
+    fontSize?: number;
+    fontFamily?: FontFamilyValues;
+    textAlign?: TextAlign;
+    verticalAlign?: VerticalAlign;
+    strokeColor?: string;
+  } & ElementConstructorOpts,
+): NonDeleted<EuclidDotElement> => {
+  return new EuclidDotElement({
+    ..._newElementBase<EuclidDotElement>("euclid", opts),
+    text: opts.text,
+    originalText: opts.originalText || "",
+    fontSize: opts.fontSize || DEFAULT_FONT_SIZE,
+    fontFamily: opts.fontFamily || DEFAULT_FONT_FAMILY,
+    textAlign: opts.textAlign || DEFAULT_TEXT_ALIGN,
+    verticalAlign: opts.verticalAlign || DEFAULT_VERTICAL_ALIGN,
+    x: opts.x - 3,
+    y: opts.y - 3,
+    width: 6,  // TODO: add side property.
+    height: 6,
+    containerId: null,
+    autoResize: true,
+    lineHeight: getDefaultLineHeight(opts.fontFamily || DEFAULT_FONT_FAMILY),
+    backgroundColor: opts.strokeColor || DEFAULT_ELEMENT_PROPS.strokeColor,
+    strokeColor: opts.strokeColor || DEFAULT_ELEMENT_PROPS.strokeColor,
+  });
+}
 
 // Simplified deep clone for the purpose of cloning ExcalidrawElement.
 //

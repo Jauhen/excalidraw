@@ -216,13 +216,13 @@ export type ExcalidrawTextElement = _ExcalidrawElementBase &
 export type ExcalidrawEuclidElement = _ExcalidrawElementBase &
   Readonly<{
     type: "euclid";
-    fontSize: number;
-    fontFamily: FontFamilyValues;
-    text: string;
-    textAlign: TextAlign;
-    verticalAlign: VerticalAlign;
+    // fontSize: number;
+    // fontFamily: FontFamilyValues;
+    // text: string;
+    // textAlign: TextAlign;
+    // verticalAlign: VerticalAlign;
     containerId: ExcalidrawGenericElement["id"] | null;
-    originalText: string;
+    // originalText: string;
     /**
      * If `true` the width will fit the text. If `false`, the text will
      * wrap to fit the width.
@@ -234,7 +234,7 @@ export type ExcalidrawEuclidElement = _ExcalidrawElementBase &
      * Unitless line height (aligned to W3C). To get line height in px, multiply
      * with font size (using `getLineHeightInPx` helper).
      */
-    lineHeight: number & { _brand: "unitlessLineHeight" };
+    // lineHeight: number & { _brand: "unitlessLineHeight" };
   }> & {
     getShape: () => GeometricShape;
     distanceToRectangle(point: Point, elementsMap: ElementsMap): number;
