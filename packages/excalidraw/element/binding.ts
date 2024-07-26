@@ -91,7 +91,7 @@ export const bindOrUnbindLinearElement = (
     linearElement,
     startBindingElement,
     endBindingElement,
-    "start",
+    "start", 
     boundToElementIds,
     unboundFromElementIds,
     elementsMap,
