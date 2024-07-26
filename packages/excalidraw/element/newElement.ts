@@ -48,6 +48,7 @@ import {
 import type { MarkOptional, Merge, Mutable } from "../utility-types";
 import { EuclidDotElement } from "./euclid/dot";
 import { getLineHeight } from "../fonts";
+import { EuclidDotElement } from "./euclid/dot";
 
 export type ElementConstructorOpts = MarkOptional<
   Omit<ExcalidrawGenericElement, "id" | "type" | "isDeleted" | "updated">,

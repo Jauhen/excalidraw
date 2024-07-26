@@ -5995,8 +5995,6 @@ class App extends React.Component<AppProps, AppState> {
     } else if (this.state.activeTool.type === "euclid") {
       // TODO(euclid)
       this.handleTextOnPointerDown(event, pointerDownState);
-    } else if (this.state.activeTool.type === "euclid") {
-      this.handleEuclidOnPointerDown(event, pointerDownState);
     } else if (
       this.state.activeTool.type === "arrow" ||
       this.state.activeTool.type === "line"
