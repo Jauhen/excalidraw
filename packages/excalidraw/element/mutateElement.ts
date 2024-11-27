@@ -9,7 +9,13 @@ import { getUpdatedTimestamp, toBrandedType } from "../utils";
 import { updateElbowArrowPoints } from "./elbowArrow";
 import { isElbowArrow } from "./typeChecks";
 
-import type { ExcalidrawElement, NonDeletedSceneElementsMap } from "./types";
+import { getPeculiarElement } from "./peculiarElement";
+
+import type {
+  ExcalidrawElement,
+  NonDeletedSceneElementsMap,
+  ExcalidrawPeculiarElement,
+} from "./types";
 import type { Mutable } from "../utility-types";
 
 export type ElementUpdate<TElement extends ExcalidrawElement> = Omit<
@@ -76,6 +82,15 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
     updates = { ...getSizeFromPoints(points), ...updates };
   }
 
+  if (element.type === "peculiar") {
+    return getPeculiarElement(element.peculiarType).mutateElement(
+      element,
+      updates as ElementUpdate<Mutable<ExcalidrawPeculiarElement>>,
+      informMutation,
+      true,
+    ) as TElement;
+  }
+
   for (const key in updates) {
     const value = (updates as any)[key];
     if (typeof value !== "undefined") {
@@ -119,7 +134,6 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
           }
         }
       }
-
       (element as any)[key] = value;
       didChange = true;
     }

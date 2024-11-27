@@ -38,6 +38,7 @@ import {
 } from "./constants";
 import { getElementAbsoluteCoords } from "./element";
 import { shouldTestInside } from "./element/collision";
+import { getPeculiarElement } from "./element/peculiarElement";
 import { LinearElementEditor } from "./element/linearElementEditor";
 import { getBoundTextElement } from "./element/textElement";
 import { KEYS } from "./keys";
@@ -192,6 +193,8 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
         shouldTestInside(element),
       );
     }
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getShape(element);
   }
 };
 
