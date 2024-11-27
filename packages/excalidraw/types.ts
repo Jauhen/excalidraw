@@ -34,6 +34,7 @@ import type {
   ExcalidrawIframeLikeElement,
   OrderedExcalidrawElement,
   ExcalidrawNonSelectionElement,
+  ExcalidrawPeculiarElement,
 } from "@excalidraw/element/types";
 
 import type {
@@ -49,6 +50,11 @@ import type {
   EphemeralIncrement,
 } from "@excalidraw/element/store";
 
+import type {
+  ExcalidrawPeculiarElementImplementation,
+  ExcalidrawPeculiarToolImplementation,
+} from "@excalidraw/element/peculiarElement";
+
 import type { Action } from "./actions/types";
 import type { Spreadsheet } from "./charts";
 import type { ClipboardData } from "./clipboard";
@@ -63,6 +69,7 @@ import type { Language } from "./i18n";
 import type { isOverScrollBars } from "./scene/scrollbars";
 import type React from "react";
 import type { JSX } from "react";
+import type { PeculiarAction } from "./actions/peculiarAction";
 
 export type SocketId = string & { _brand: "SocketId" };
 
@@ -155,15 +162,19 @@ export type ToolType =
   | "frame"
   | "magicframe"
   | "embeddable"
-  | "laser";
+  | "laser"
+  | "peculiar";
 
 export type ElementOrToolType = ExcalidrawElementType | ToolType | "custom";
 
 export type ActiveTool =
-  | {
-      type: ToolType;
-      customType: null;
-    }
+  | (
+      | {
+          type: Exclude<ToolType, "peculiar">;
+          customType: null;
+        }
+      | { type: Extract<ToolType, "peculiar">; customType: string }
+    )
   | {
       type: "custom";
       customType: string;
@@ -235,6 +246,7 @@ export type InteractiveCanvasAppState = Readonly<
     croppingElementId: AppState["croppingElementId"];
     // Search matches
     searchMatches: AppState["searchMatches"];
+    peculiar: AppState["peculiar"];
   }
 >;
 
@@ -284,7 +296,10 @@ export interface AppState {
    * multiElement is for multi-point linear element that's created by clicking as opposed to dragging
    * - when set and present, the editor will handle linear element creation logic accordingly
    */
-  multiElement: NonDeleted<ExcalidrawLinearElement> | null;
+  multiElement:
+    | NonDeleted<ExcalidrawLinearElement>
+    | NonDeleted<ExcalidrawPeculiarElement>
+    | null;
   /**
    * decoupled from newElement, dragging selection only creates selectionElement
    * - set on pointer down, updated during pointer move
@@ -433,6 +448,8 @@ export interface AppState {
   croppingElementId: ExcalidrawElement["id"] | null;
 
   searchMatches: readonly SearchMatch[];
+
+  peculiar: Record<string, any>;
 }
 
 type SearchMatch = {
@@ -608,6 +625,8 @@ export interface ExcalidrawProps {
   aiEnabled?: boolean;
   showDeprecatedFonts?: boolean;
   renderScrollbars?: boolean;
+  addtionalTranslationFolder?: string[];
+  defaultAdditionalTranslations?: JSONValue;
 }
 
 export type SceneData = {
@@ -850,6 +869,18 @@ export interface ExcalidrawImperativeAPI {
   onUserFollow: (
     callback: (payload: OnUserFollowedPayload) => void,
   ) => UnsubscribeCallback;
+  registerPeculiarElement: (
+    peculiarType: string,
+    implementation: ExcalidrawPeculiarElementImplementation<any>,
+  ) => void;
+  registerPeculiarAction: (
+    peculiarType: string,
+    action: PeculiarAction,
+  ) => void;
+  registerPeculiarTool: (
+    toolType: string,
+    tool: ExcalidrawPeculiarToolImplementation,
+  ) => void;
 }
 
 export type Device = Readonly<{

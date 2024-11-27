@@ -112,7 +112,12 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
 
   return (
     <EditorJotaiProvider store={editorJotaiStore}>
-      <InitializeApp langCode={langCode} theme={theme}>
+      <InitializeApp
+        langCode={langCode}
+        theme={theme}
+        defaultAdditionalTranslations={props.defaultAdditionalTranslations}
+        addtionalTranslationFolder={props.addtionalTranslationFolder}
+      >
         <App
           onChange={onChange}
           onIncrement={onIncrement}
@@ -308,3 +313,5 @@ export { getDataURL } from "./data/blob";
 export { isElementLink } from "@excalidraw/element/elementLink";
 
 export { setCustomTextMetricsProvider } from "@excalidraw/element/textMeasurements";
+
+export * from "./peculiar";
