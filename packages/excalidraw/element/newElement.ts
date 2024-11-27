@@ -18,6 +18,7 @@ import type {
   ExcalidrawIframeElement,
   ElementsMap,
   ExcalidrawArrowElement,
+  ExcalidrawPeculiarElement,
 } from "./types";
 import {
   arrayToMap,
@@ -490,6 +491,24 @@ export const newImageElement = (
     scale: opts.scale ?? [1, 1],
     crop: opts.crop ?? null,
   };
+};
+
+export const newPeculiarElement = (
+  opts: {
+    type: ExcalidrawPeculiarElement["type"];
+    peculiarType: string;
+    lineHeight?: string;
+  } & ElementConstructorOpts,
+): NonDeleted<ExcalidrawPeculiarElement> => {
+  const peculiarElement = newElementWith(
+    {
+      ..._newElementBase<ExcalidrawPeculiarElement>("peculiar", opts),
+      type: "peculiar",
+      peculiarType: opts.peculiarType,
+    },
+    {},
+  );
+  return peculiarElement;
 };
 
 // Simplified deep clone for the purpose of cloning ExcalidrawElement.

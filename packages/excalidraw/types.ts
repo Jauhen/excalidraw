@@ -41,6 +41,8 @@ import type { ContextMenuItems } from "./components/ContextMenu";
 import type { SnapLine } from "./snapping";
 import type { Merge, MaybePromise, ValueOf, MakeBrand } from "./utility-types";
 import type { StoreActionType } from "./store";
+import type { ExcalidrawPeculiarElementImplementation } from "./element/customElement";
+import type { PeculiarAction } from "./actions/peculiarAction";
 
 export type SocketId = string & { _brand: "SocketId" };
 
@@ -132,15 +134,19 @@ export type ToolType =
   | "frame"
   | "magicframe"
   | "embeddable"
-  | "laser";
+  | "laser"
+  | "peculiar";
 
 export type ElementOrToolType = ExcalidrawElementType | ToolType | "custom";
 
 export type ActiveTool =
-  | {
-      type: ToolType;
-      customType: null;
-    }
+  | (
+      | {
+          type: Exclude<ToolType, "peculiar">;
+          customType: null;
+        }
+      | { type: Extract<ToolType, "peculiar">; customType: string }
+    )
   | {
       type: "custom";
       customType: string;
@@ -212,6 +218,7 @@ export type InteractiveCanvasAppState = Readonly<
     croppingElementId: AppState["croppingElementId"];
     // Search matches
     searchMatches: AppState["searchMatches"];
+    peculiar: AppState["peculiar"];
   }
 >;
 
@@ -408,6 +415,8 @@ export interface AppState {
   croppingElementId: ExcalidrawElement["id"] | null;
 
   searchMatches: readonly SearchMatch[];
+
+  peculiar: Record<string, any>;
 }
 
 type SearchMatch = {
@@ -802,6 +811,14 @@ export interface ExcalidrawImperativeAPI {
   onUserFollow: (
     callback: (payload: OnUserFollowedPayload) => void,
   ) => UnsubscribeCallback;
+  registerPeculiarElement: (
+    peculiarType: string,
+    implementation: ExcalidrawPeculiarElementImplementation,
+  ) => void;
+  registerPeculiarAction: (
+    peculiarType: string,
+    action: PeculiarAction,
+  ) => void;
 }
 
 export type Device = Readonly<{
