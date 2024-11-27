@@ -1,4 +1,8 @@
-import type { ExcalidrawElement, SceneElementsMap } from "./types";
+import type {
+  ExcalidrawElement,
+  SceneElementsMap,
+  ExcalidrawPeculiarElement,
+} from "./types";
 import Scene from "../scene/Scene";
 import { getSizeFromPoints } from "../points";
 import { randomInteger } from "../random";
@@ -8,6 +12,7 @@ import { ShapeCache } from "../scene/ShapeCache";
 import { isElbowArrow } from "./typeChecks";
 import { updateElbowArrowPoints } from "./elbowArrow";
 import type { Radians } from "../../math";
+import { getPeculiarElement } from "./peculiarElement";
 
 export type ElementUpdate<TElement extends ExcalidrawElement> = Omit<
   Partial<TElement>,
@@ -73,6 +78,15 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
     updates = { ...getSizeFromPoints(points), ...updates };
   }
 
+  if (element.type === "peculiar") {
+    return getPeculiarElement(element.peculiarType).mutateElement(
+      element,
+      updates as ElementUpdate<Mutable<ExcalidrawPeculiarElement>>,
+      informMutation,
+      true,
+    ) as TElement;
+  }
+
   for (const key in updates) {
     const value = (updates as any)[key];
     if (typeof value !== "undefined") {
@@ -116,7 +130,6 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
           }
         }
       }
-
       (element as any)[key] = value;
       didChange = true;
     }

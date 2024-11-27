@@ -1500,6 +1500,8 @@ export const distanceToBindableElement = (
       return distanceToDiamond(element, point, elementsMap);
     case "ellipse":
       return distanceToEllipse(element, point, elementsMap);
+    case "peculiar":
+      return Number.POSITIVE_INFINITY;
   }
 };
 
@@ -1727,6 +1729,9 @@ const determineFocusPoint = (
     case "ellipse":
       point = findFocusPointForEllipse(element, focus, adjecentPointRel);
       break;
+    case "peculiar":
+      point = GA.point(element.x, element.y);
+      break;
   }
   return pointFromPair(
     GAPoint.toTuple(GATransform.apply(reverseRelateToCenter, point)),
@@ -1801,6 +1806,9 @@ const getSortedElementLineIntersections = (
       break;
     case "ellipse":
       intersections = getEllipseIntersections(element, gap, line);
+      break;
+    case "peculiar":
+      intersections = [];
       break;
   }
   if (intersections.length < 2) {
