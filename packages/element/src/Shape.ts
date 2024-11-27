@@ -3,6 +3,11 @@ import { simplify } from "points-on-curve";
 import { pointFrom, pointDistance, type LocalPoint } from "@excalidraw/math";
 import { ROUGHNESS, isTransparent, assertNever } from "@excalidraw/common";
 
+import {
+  getPeculiarElement,
+  maybePeculiarType,
+} from "@excalidraw/element/peculiarElement";
+
 import type { Mutable } from "@excalidraw/common/utility-types";
 
 import type { EmbedsValidationStatus } from "@excalidraw/excalidraw/types";
@@ -51,7 +56,7 @@ function adjustRoughness(element: ExcalidrawElement): number {
     // is round & both sides above 15px
     (minSize >= 15 &&
       !!element.roundness &&
-      canChangeRoundness(element.type)) ||
+      canChangeRoundness(element.type, maybePeculiarType(element), false)) ||
     // relatively long linear element
     (isLinearElement(element) && maxSize >= 50)
   ) {
@@ -121,6 +126,24 @@ export const generateRoughOptions = (
     }
     case "arrow":
       return options;
+    case "peculiar": {
+      const implementation = getPeculiarElement(element.peculiarType);
+      if (implementation.hasBackgroundColor()) {
+        options.fillStyle = element.fillStyle;
+        options.fill = isTransparent(element.backgroundColor)
+          ? undefined
+          : element.backgroundColor;
+      } else {
+        options.fillStyle = "solid";
+        options.fill = isTransparent(element.strokeColor)
+          ? undefined
+          : element.strokeColor;
+      }
+      if (!implementation.hasStrokeWidth()) {
+        options.strokeWidth = 1;
+      }
+      return options;
+    }
     default: {
       throw new Error(`Unimplemented type ${element.type}`);
     }
@@ -537,6 +560,11 @@ export const _generateElementShape = (
       // `element.canvas` on rerenders
       return shape;
     }
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getElementShape(
+        element,
+        generator,
+      );
     default: {
       assertNever(
         element,

@@ -59,6 +59,8 @@ import { updateElbowArrowPoints } from "@excalidraw/element";
 
 import { CaptureUpdateAction } from "@excalidraw/element";
 
+import { maybePeculiarType } from "@excalidraw/element/peculiarElement";
+
 import type { LocalPoint } from "@excalidraw/math";
 
 import type {
@@ -306,7 +308,7 @@ export const actionChangeStrokeColor = register({
           elements,
           appState,
           (el) => {
-            return hasStrokeColor(el.type)
+            return hasStrokeColor(el.type, maybePeculiarType(el), false)
               ? newElementWith(el, {
                   strokeColor: value.currentItemStrokeColor,
                 })

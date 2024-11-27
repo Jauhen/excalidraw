@@ -30,6 +30,7 @@ import {
 import type { NormalizedZoomValue, Zoom } from "@excalidraw/excalidraw/types";
 
 import { shouldTestInside } from "./collision";
+import { getPeculiarElement } from "./peculiarElement";
 import { LinearElementEditor } from "./linearElementEditor";
 import { getBoundTextElement } from "./textElement";
 import { ShapeCache } from "./ShapeCache";
@@ -99,6 +100,8 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
         shouldTestInside(element),
       );
     }
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getShape(element);
   }
 };
 
