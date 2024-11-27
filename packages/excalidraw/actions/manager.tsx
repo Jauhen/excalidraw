@@ -14,6 +14,7 @@ import type {
 import type { AppClassProperties, AppState } from "../types";
 import { trackEvent } from "../analytics";
 import { isPromiseLike } from "../utils";
+import type { PeculiarAction } from "./peculiarAction";
 
 const trackAction = (
   action: Action,
@@ -150,6 +151,43 @@ export class ActionManager {
         : true)
     ) {
       const action = this.actions[name];
+      const PanelComponent = action.PanelComponent!;
+      PanelComponent.displayName = "PanelComponent";
+      const elements = this.getElementsIncludingDeleted();
+      const appState = this.getAppState();
+      const updateData = (formState?: any) => {
+        trackAction(action, "ui", appState, elements, this.app, formState);
+
+        this.updater(
+          action.perform(
+            this.getElementsIncludingDeleted(),
+            this.getAppState(),
+            formState,
+            this.app,
+          ),
+        );
+      };
+
+      return (
+        <PanelComponent
+          elements={this.getElementsIncludingDeleted()}
+          appState={this.getAppState()}
+          updateData={updateData}
+          appProps={this.app.props}
+          app={this.app}
+          data={data}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  renderPeculiarAction = (
+    action: PeculiarAction,
+    data?: PanelComponentProps["data"],
+  ) => {
+    if ("PanelComponent" in action) {
       const PanelComponent = action.PanelComponent!;
       PanelComponent.displayName = "PanelComponent";
       const elements = this.getElementsIncludingDeleted();

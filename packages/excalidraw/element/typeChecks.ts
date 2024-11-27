@@ -3,6 +3,7 @@ import type { ElementOrToolType } from "../types";
 import type { MarkNonNullable } from "../utility-types";
 import { assertNever } from "../utils";
 import type { Bounds } from "./bounds";
+import { getPeculiarElement } from "./peculiarElement";
 import type {
   ExcalidrawElement,
   ExcalidrawTextElement,
@@ -63,7 +64,12 @@ export const isIframeLikeElement = (
 export const isTextElement = (
   element: ExcalidrawElement | null,
 ): element is ExcalidrawTextElement => {
-  return element != null && element.type === "text";
+  return (
+    element != null &&
+    (element.type === "text" ||
+      (element.type === "peculiar" &&
+        getPeculiarElement(element.peculiarType).hasText()))
+  );
 };
 
 export const isFrameElement = (
@@ -229,7 +235,8 @@ export const isExcalidrawElement = (
     case "frame":
     case "magicframe":
     case "image":
-    case "selection": {
+    case "selection":
+    case "peculiar": {
       return true;
     }
     default: {

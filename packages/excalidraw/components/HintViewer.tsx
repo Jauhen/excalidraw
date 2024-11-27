@@ -1,5 +1,10 @@
 import { t } from "../i18n";
-import type { AppClassProperties, Device, UIAppState } from "../types";
+import type {
+  ActiveTool,
+  AppClassProperties,
+  Device,
+  UIAppState,
+} from "../types";
 import {
   isFlowchartNodeElement,
   isImageElement,
@@ -14,6 +19,8 @@ import "./HintViewer.scss";
 import { isNodeInFlowchart } from "../element/flowchart";
 import { isGridModeEnabled } from "../snapping";
 import { CANVAS_SEARCH_TAB, DEFAULT_SIDEBAR } from "../constants";
+import { getPeculiarTool } from "../element/peculiarElement";
+import type { ExcalidrawPeculiarElement } from "../element/types";
 
 interface HintViewerProps {
   appState: UIAppState;
@@ -70,6 +77,14 @@ const getHints = ({
 
   if (appState.activeTool.type === "image" && appState.pendingImageElementId) {
     return t("hints.placeImage");
+  }
+
+  if (appState.activeTool.type === "peculiar") {
+    if (activeTool.customType) {
+      return getPeculiarTool((activeTool as ActiveTool).customType!).getHint(
+        appState.multiElement as ExcalidrawPeculiarElement,
+      );
+    }
   }
 
   const selectedElements = app.scene.getSelectedElements(appState);

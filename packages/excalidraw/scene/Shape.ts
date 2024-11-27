@@ -26,6 +26,10 @@ import type { EmbedsValidationStatus } from "../types";
 import { pointFrom, pointDistance, type LocalPoint } from "@excalidraw/math";
 import { getCornerRadius, isPathALoop } from "../shapes";
 import { headingForPointIsHorizontal } from "../element/heading";
+import {
+  getPeculiarElement,
+  maybePeculiarType,
+} from "../element/peculiarElement";
 
 const getDashArrayDashed = (strokeWidth: number) => [8, 8 + strokeWidth];
 
@@ -44,7 +48,7 @@ function adjustRoughness(element: ExcalidrawElement): number {
     // is round & both sides above 15px
     (minSize >= 15 &&
       !!element.roundness &&
-      canChangeRoundness(element.type)) ||
+      canChangeRoundness(element.type, maybePeculiarType(element), false)) ||
     // relatively long linear element
     (isLinearElement(element) && maxSize >= 50)
   ) {
@@ -114,6 +118,24 @@ export const generateRoughOptions = (
     }
     case "arrow":
       return options;
+    case "peculiar": {
+      const implementation = getPeculiarElement(element.peculiarType);
+      if (implementation.hasBackgroundColor()) {
+        options.fillStyle = element.fillStyle;
+        options.fill = isTransparent(element.backgroundColor)
+          ? undefined
+          : element.backgroundColor;
+      } else {
+        options.fillStyle = "solid";
+        options.fill = isTransparent(element.strokeColor)
+          ? undefined
+          : element.strokeColor;
+      }
+      if (!implementation.hasStrokeWidth()) {
+        options.strokeWidth = 1;
+      }
+      return options;
+    }
     default: {
       throw new Error(`Unimplemented type ${element.type}`);
     }
@@ -527,6 +549,11 @@ export const _generateElementShape = (
       // `element.canvas` on rerenders
       return shape;
     }
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getElementShape(
+        element,
+        generator,
+      );
     default: {
       assertNever(
         element,
