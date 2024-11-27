@@ -75,6 +75,7 @@ import {
   clamp,
 } from "../../math";
 import { segmentIntersectRectangleElement } from "../../utils/geometry/shape";
+import { getPeculiarElementImplementation } from "./customElement";
 
 export type SuggestedBinding =
   | NonDeleted<ExcalidrawBindableElement>
@@ -1382,6 +1383,10 @@ export const distanceToBindableElement = (
       return distanceToDiamond(element, point, elementsMap);
     case "ellipse":
       return distanceToEllipse(element, point, elementsMap);
+    case "peculiar":
+      return getPeculiarElementImplementation(
+        element.peculiarType,
+      ).distanceToElement(point, elementsMap);
   }
 };
 
@@ -1609,6 +1614,11 @@ const determineFocusPoint = (
     case "ellipse":
       point = findFocusPointForEllipse(element, focus, adjecentPointRel);
       break;
+    case "peculiar":
+      point = getPeculiarElementImplementation(
+        element.peculiarType,
+      ).findFocusPoint(focus, adjecentPointRel);
+      break;
   }
   return pointFromPair(
     GAPoint.toTuple(GATransform.apply(reverseRelateToCenter, point)),
@@ -1683,6 +1693,11 @@ const getSortedElementLineIntersections = (
       break;
     case "ellipse":
       intersections = getEllipseIntersections(element, gap, line);
+      break;
+    case "peculiar":
+      intersections = getPeculiarElementImplementation(
+        element.peculiarType,
+      ).getSortedElementLineIntersections(element, gap, line);
       break;
   }
   if (intersections.length < 2) {

@@ -65,6 +65,7 @@ import type {
   ExcalidrawFrameLikeElement,
   ExcalidrawImageElement,
   ExcalidrawLinearElement,
+  ExcalidrawPeculiarElement,
   ExcalidrawTextElement,
   GroupId,
   NonDeleted,
@@ -76,6 +77,7 @@ import type {
 } from "../scene/types";
 import type { GlobalPoint, LocalPoint, Radians } from "../../math";
 import { getCornerRadius } from "../shapes";
+import { getPeculiarElementImplementation } from "../element/customElement";
 
 const renderLinearElementPointHighlight = (
   context: CanvasRenderingContext2D,
@@ -887,6 +889,21 @@ const _renderInteractiveScene = ({
         elementsMap,
       );
     }
+
+    const isSinglePeculiarElementSelected =
+      selectedElements.length === 1 && selectedElements[0].type === "peculiar";
+    if (isSinglePeculiarElementSelected && !selectedElements[0].locked) {
+      getPeculiarElementImplementation(
+        (selectedElements[0] as NonDeleted<ExcalidrawPeculiarElement>)
+          .peculiarType,
+      ).renderElementSelection(
+        context,
+        appState,
+        selectedElements[0] as NonDeleted<ExcalidrawPeculiarElement>,
+        elementsMap,
+      );
+    }
+
     const selectionColor = renderConfig.selectionColor || oc.black;
 
     if (showBoundingBox) {
