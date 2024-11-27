@@ -38,6 +38,7 @@ import {
 import { getElementAbsoluteCoords } from "./element";
 import type { Bounds } from "./element/bounds";
 import { shouldTestInside } from "./element/collision";
+import { getPeculiarElement } from "./element/peculiarElement";
 import { LinearElementEditor } from "./element/linearElementEditor";
 import { getBoundTextElement } from "./element/textElement";
 import type {
@@ -190,6 +191,8 @@ export const getElementShape = <Point extends GlobalPoint | LocalPoint>(
         shouldTestInside(element),
       );
     }
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getShape(element);
   }
 };
 

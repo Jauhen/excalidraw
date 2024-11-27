@@ -108,7 +108,12 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
 
   return (
     <EditorJotaiProvider store={editorJotaiStore}>
-      <InitializeApp langCode={langCode} theme={theme}>
+      <InitializeApp
+        langCode={langCode}
+        theme={theme}
+        defaultAdditionalTranslations={props.defaultAdditionalTranslations}
+        addtionalTranslationFolder={props.addtionalTranslationFolder}
+      >
         <App
           onChange={onChange}
           initialData={initialData}

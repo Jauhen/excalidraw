@@ -122,6 +122,7 @@ import { LinearElementEditor } from "../element/linearElementEditor";
 import type { LocalPoint } from "../../math";
 import { pointFrom } from "../../math";
 import { Range } from "../components/Range";
+import { maybePeculiarType } from "../element/peculiarElement";
 
 const FONT_SIZE_RELATIVE_INCREASE_STEP = 0.1;
 
@@ -288,7 +289,7 @@ export const actionChangeStrokeColor = register({
           elements,
           appState,
           (el) => {
-            return hasStrokeColor(el.type)
+            return hasStrokeColor(el.type, maybePeculiarType(el), false)
               ? newElementWith(el, {
                   strokeColor: value.currentItemStrokeColor,
                 })
