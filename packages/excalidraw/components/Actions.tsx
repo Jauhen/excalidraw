@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import type { ActionManager } from "../actions/manager";
 import type {
   ExcalidrawElement,
@@ -51,6 +51,12 @@ import {
 import { KEYS } from "../keys";
 import { useTunnels } from "../context/tunnels";
 import { CLASSES } from "../constants";
+import {
+  getPeculiarActions,
+  hasPeculiarActions,
+  maybyPeculiarType,
+} from "../element/peculiarElement";
+import type { PeculiarAction } from "../actions/peculiarAction";
 
 export const canChangeStrokeColor = (
   appState: UIAppState,
@@ -67,12 +73,13 @@ export const canChangeStrokeColor = (
   }
 
   return (
-    (hasStrokeColor(appState.activeTool.type) &&
-      appState.activeTool.type !== "image" &&
+    (hasStrokeColor(appState.activeTool.type, appState.activeTool.customType) &&
       commonSelectedType !== "image" &&
       commonSelectedType !== "frame" &&
       commonSelectedType !== "magicframe") ||
-    targetElements.some((element) => hasStrokeColor(element.type))
+    targetElements.some((element) =>
+      hasStrokeColor(element.type, maybyPeculiarType(element)),
+    )
   );
 };
 
@@ -81,8 +88,10 @@ export const canChangeBackgroundColor = (
   targetElements: ExcalidrawElement[],
 ) => {
   return (
-    hasBackground(appState.activeTool.type) ||
-    targetElements.some((element) => hasBackground(element.type))
+    hasBackground(appState.activeTool.type, appState.activeTool.customType) ||
+    targetElements.some((element) =>
+      hasBackground(element.type, maybyPeculiarType(element)),
+    )
   );
 };
 
@@ -90,10 +99,12 @@ export const SelectedShapeActions = ({
   appState,
   elementsMap,
   renderAction,
+  renderPeculiarAction,
 }: {
   appState: UIAppState;
   elementsMap: NonDeletedElementsMap | NonDeletedSceneElementsMap;
   renderAction: ActionManager["renderAction"];
+  renderPeculiarAction: ActionManager["renderPeculiarAction"];
 }) => {
   const targetElements = getTargetElements(elementsMap, appState);
 
@@ -112,11 +123,12 @@ export const SelectedShapeActions = ({
   const isRTL = document.documentElement.getAttribute("dir") === "rtl";
 
   const showFillIcons =
-    (hasBackground(appState.activeTool.type) &&
+    (hasBackground(appState.activeTool.type, appState.activeTool.customType) &&
       !isTransparent(appState.currentItemBackgroundColor)) ||
     targetElements.some(
       (element) =>
-        hasBackground(element.type) && !isTransparent(element.backgroundColor),
+        hasBackground(element.type, maybyPeculiarType(element)) &&
+        !isTransparent(element.backgroundColor),
     );
 
   const showLinkIcon =
@@ -144,31 +156,44 @@ export const SelectedShapeActions = ({
       )}
       {showFillIcons && renderAction("changeFillStyle")}
 
-      {(hasStrokeWidth(appState.activeTool.type) ||
-        targetElements.some((element) => hasStrokeWidth(element.type))) &&
+      {(hasStrokeWidth(
+        appState.activeTool.type,
+        appState.activeTool.customType,
+      ) ||
+        targetElements.some((element) =>
+          hasStrokeWidth(element.type, maybyPeculiarType(element)),
+        )) &&
         renderAction("changeStrokeWidth")}
 
       {(appState.activeTool.type === "freedraw" ||
         targetElements.some((element) => element.type === "freedraw")) &&
         renderAction("changeStrokeShape")}
 
-      {(hasStrokeStyle(appState.activeTool.type) ||
-        targetElements.some((element) => hasStrokeStyle(element.type))) && (
+      {(hasStrokeStyle(
+        appState.activeTool.type,
+        appState.activeTool.customType,
+      ) ||
+        targetElements.some((element) =>
+          hasStrokeStyle(element.type, maybyPeculiarType(element)),
+        )) && (
         <>
           {renderAction("changeStrokeStyle")}
           {renderAction("changeSloppiness")}
         </>
       )}
 
-      {(canChangeRoundness(appState.activeTool.type) ||
-        targetElements.some((element) => canChangeRoundness(element.type))) && (
-        <>{renderAction("changeRoundness")}</>
-      )}
+      {(canChangeRoundness(
+        appState.activeTool.type,
+        appState.activeTool.customType,
+      ) ||
+        targetElements.some((element) =>
+          canChangeRoundness(element.type, maybyPeculiarType(element)),
+        )) && <>{renderAction("changeRoundness")}</>}
 
-      {(toolIsArrow(appState.activeTool.type) ||
-        targetElements.some((element) => toolIsArrow(element.type))) && (
-        <>{renderAction("changeArrowType")}</>
-      )}
+      {(toolIsArrow(appState.activeTool.type, appState.activeTool.customType) ||
+        targetElements.some((element) =>
+          toolIsArrow(element.type, maybyPeculiarType(element)),
+        )) && <>{renderAction("changeArrowType")}</>}
 
       {(appState.activeTool.type === "text" ||
         targetElements.some(isTextElement)) && (
@@ -183,9 +208,24 @@ export const SelectedShapeActions = ({
 
       {shouldAllowVerticalAlign(targetElements, elementsMap) &&
         renderAction("changeVerticalAlign")}
-      {(canHaveArrowheads(appState.activeTool.type) ||
-        targetElements.some((element) => canHaveArrowheads(element.type))) && (
-        <>{renderAction("changeArrowhead")}</>
+      {(canHaveArrowheads(
+        appState.activeTool.type,
+        appState.activeTool.customType,
+      ) ||
+        targetElements.some((element) =>
+          canHaveArrowheads(element.type, maybyPeculiarType(element)),
+        )) && <>{renderAction("changeArrowhead")}</>}
+
+      {hasPeculiarActions(targetElements, elementsMap) && (
+        <>
+          {getPeculiarActions(targetElements, elementsMap).map(
+            (action: PeculiarAction) => (
+              <Fragment key={action.peculiarType}>
+                {renderPeculiarAction(action)}
+              </Fragment>
+            ),
+          )}
+        </>
       )}
 
       {renderAction("changeOpacity")}

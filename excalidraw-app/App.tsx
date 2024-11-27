@@ -127,6 +127,12 @@ import DebugCanvas, {
 } from "./components/DebugCanvas";
 import { AIComponents } from "./components/AI";
 import { ExcalidrawPlusIframeExport } from "./ExcalidrawPlusIframeExport";
+import { EUCLID_DOT, euclidDotImplementation } from "./euclid/dot";
+import {
+  EUCLID_DOT_SIZE_ACTION,
+  EuclidDotSizeAction,
+} from "./euclid/dot-size-action";
+import { EUCLID_SEGMENT, euclidSegmentImplementation } from "./euclid/segment";
 import { isElementLink } from "../packages/excalidraw/element/elementLink";
 
 polyfill();
@@ -201,6 +207,19 @@ const initializeScene = async (opts: {
     | { isExternalScene: false; id?: null; key?: null }
   )
 > => {
+  opts.excalidrawAPI.registerPeculiarAction(
+    EUCLID_DOT_SIZE_ACTION,
+    EuclidDotSizeAction,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_DOT,
+    euclidDotImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_SEGMENT,
+    euclidSegmentImplementation,
+  );
+
   const searchParams = new URLSearchParams(window.location.search);
   const id = searchParams.get("id");
   const jsonBackendMatch = window.location.hash.match(
@@ -888,7 +907,10 @@ const ExcalidrawWrapper = () => {
             </OverwriteConfirmDialog.Action>
           )}
         </OverwriteConfirmDialog>
-        <AppFooter onChange={() => excalidrawAPI?.refresh()} />
+        <AppFooter
+          onChange={() => excalidrawAPI?.refresh()}
+          excalidrawAPI={excalidrawAPI}
+        />
         {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />}
 
         <TTDDialogTrigger />
