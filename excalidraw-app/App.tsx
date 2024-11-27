@@ -127,7 +127,20 @@ import DebugCanvas, {
 } from "./components/DebugCanvas";
 import { AIComponents } from "./components/AI";
 import { ExcalidrawPlusIframeExport } from "./ExcalidrawPlusIframeExport";
+import { EUCLID_POINT, euclidPointImplementation } from "./euclid/point";
+import {
+  EUCLID_POINT_SIZE_ACTION,
+  EuclidPointSizeAction,
+} from "./euclid/pointSizeAction";
+import { EUCLID_SEGMENT, euclidSegmentImplementation } from "./euclid/segment";
 import { isElementLink } from "../packages/excalidraw/element/elementLink";
+import { EUCLID_LINE, euclidLineImplementation } from "./euclid/line";
+import defaultEuclidLang from "./euclid/locales/en.json";
+import { EUCLID_CIRCLE, euclidCircleImplementation } from "./euclid/circle";
+import { euclidPointToolImplementation } from "./euclid/pointTool";
+import { euclidSegmentToolImplementation } from "./euclid/segmentTool";
+import { euclidLineToolImplementation } from "./euclid/lineTool";
+import { euclidCircleToolImplementation } from "./euclid/circleTool";
 
 polyfill();
 
@@ -201,6 +214,43 @@ const initializeScene = async (opts: {
     | { isExternalScene: false; id?: null; key?: null }
   )
 > => {
+  opts.excalidrawAPI.registerPeculiarAction(
+    EUCLID_POINT_SIZE_ACTION,
+    EuclidPointSizeAction,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_POINT,
+    euclidPointImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_SEGMENT,
+    euclidSegmentImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_LINE,
+    euclidLineImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_CIRCLE,
+    euclidCircleImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_POINT,
+    euclidPointToolImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_SEGMENT,
+    euclidSegmentToolImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_LINE,
+    euclidLineToolImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_CIRCLE,
+    euclidCircleToolImplementation,
+  );
+
   const searchParams = new URLSearchParams(window.location.search);
   const id = searchParams.get("id");
   const jsonBackendMatch = window.location.hash.match(
@@ -855,6 +905,8 @@ const ExcalidrawWrapper = () => {
             excalidrawAPI?.scrollToContent(element.link, { animate: true });
           }
         }}
+        addtionalTranslationFolder={["/euclid/locales"]}
+        defaultAdditionalTranslations={defaultEuclidLang}
       >
         <AppMainMenu
           onCollabDialogOpen={onCollabDialogOpen}
@@ -888,7 +940,13 @@ const ExcalidrawWrapper = () => {
             </OverwriteConfirmDialog.Action>
           )}
         </OverwriteConfirmDialog>
-        <AppFooter onChange={() => excalidrawAPI?.refresh()} />
+        {excalidrawAPI && (
+          <AppFooter
+            onChange={() => excalidrawAPI?.refresh()}
+            excalidrawAPI={excalidrawAPI}
+            appState={excalidrawAPI?.getAppState()}
+          />
+        )}
         {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />}
 
         <TTDDialogTrigger />

@@ -30,6 +30,7 @@ import {
   type LocalPoint,
 } from "../../math";
 import { getCornerRadius, isPathALoop } from "../shapes";
+import { getPeculiarElement } from "../element/peculiarElement";
 
 const getDashArrayDashed = (strokeWidth: number) => [8, 8 + strokeWidth];
 
@@ -118,6 +119,24 @@ export const generateRoughOptions = (
     }
     case "arrow":
       return options;
+    case "peculiar": {
+      const implementation = getPeculiarElement(element.peculiarType);
+      if (implementation.hasBackgroundColor()) {
+        options.fillStyle = element.fillStyle;
+        options.fill = isTransparent(element.backgroundColor)
+          ? undefined
+          : element.backgroundColor;
+      } else {
+        options.fillStyle = "solid";
+        options.fill = isTransparent(element.strokeColor)
+          ? undefined
+          : element.strokeColor;
+      }
+      if (!implementation.hasStrokeWidth()) {
+        options.strokeWidth = 1;
+      }
+      return options;
+    }
     default: {
       throw new Error(`Unimplemented type ${element.type}`);
     }
@@ -494,6 +513,11 @@ export const _generateElementShape = (
       // `element.canvas` on rerenders
       return shape;
     }
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getElementShape(
+        element,
+        generator,
+      );
     default: {
       assertNever(
         element,

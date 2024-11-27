@@ -109,7 +109,12 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
 
   return (
     <Provider unstable_createStore={() => jotaiStore} scope={jotaiScope}>
-      <InitializeApp langCode={langCode} theme={theme}>
+      <InitializeApp
+        langCode={langCode}
+        theme={theme}
+        defaultAdditionalTranslations={props.defaultAdditionalTranslations}
+        addtionalTranslationFolder={props.addtionalTranslationFolder}
+      >
         <App
           onChange={onChange}
           initialData={initialData}

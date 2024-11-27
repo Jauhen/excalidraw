@@ -1,0 +1,25 @@
+{
+  "euclid": {
+    "name": "Euclid",
+    "tools": {
+      "point": "Point",
+      "line": "Line",
+      "segment": "Segment",
+      "circle": "Circle",
+      "midpoint": "Midpoint",
+      "reflect": "Reflect",
+      "bisector": "Bisector"
+    },
+    "actions": {
+      "pointSize": {
+        "title": "Point size",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      }
+    },
+    "hints": {
+      "point": "Click to add a point with a label, shift-click to add a point without label"
+    }
+  }
+}

@@ -221,6 +221,7 @@ const LayerUI = ({
           appState={appState}
           elementsMap={app.scene.getNonDeletedElementsMap()}
           renderAction={actionManager.renderAction}
+          renderPeculiarAction={actionManager.renderPeculiarAction}
         />
       </Island>
     </Section>

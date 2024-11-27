@@ -1,3 +1,4 @@
+import { getPeculiarElement } from "../element/peculiarElement";
 import { isIframeElement } from "../element/typeChecks";
 import type {
   ExcalidrawIframeElement,
@@ -5,19 +6,35 @@ import type {
 } from "../element/types";
 import type { ElementOrToolType } from "../types";
 
-export const hasBackground = (type: ElementOrToolType) =>
+export const hasBackground = (
+  type: ElementOrToolType,
+  customType?: string | null,
+) =>
   type === "rectangle" ||
   type === "iframe" ||
   type === "embeddable" ||
   type === "ellipse" ||
   type === "diamond" ||
   type === "line" ||
-  type === "freedraw";
+  type === "freedraw" ||
+  (type === "peculiar" && getPeculiarElement(customType!).hasBackgroundColor());
 
-export const hasStrokeColor = (type: ElementOrToolType) =>
-  type !== "image" && type !== "frame" && type !== "magicframe";
+export const hasStrokeColor = (
+  type: ElementOrToolType,
+  customType?: string | null,
+) => {
+  return (
+    type !== "image" &&
+    type !== "frame" &&
+    type !== "magicframe" &&
+    (type !== "peculiar" || getPeculiarElement(customType!).hasStrokeColor())
+  );
+};
 
-export const hasStrokeWidth = (type: ElementOrToolType) =>
+export const hasStrokeWidth = (
+  type: ElementOrToolType,
+  customType?: string | null,
+) =>
   type === "rectangle" ||
   type === "iframe" ||
   type === "embeddable" ||
@@ -25,28 +42,47 @@ export const hasStrokeWidth = (type: ElementOrToolType) =>
   type === "diamond" ||
   type === "freedraw" ||
   type === "arrow" ||
-  type === "line";
+  type === "line" ||
+  (type === "peculiar" && getPeculiarElement(customType!).hasStrokeWidth());
 
-export const hasStrokeStyle = (type: ElementOrToolType) =>
+export const hasStrokeStyle = (
+  type: ElementOrToolType,
+  customType?: string | null,
+) =>
   type === "rectangle" ||
   type === "iframe" ||
   type === "embeddable" ||
   type === "ellipse" ||
   type === "diamond" ||
   type === "arrow" ||
-  type === "line";
+  type === "line" ||
+  (type === "peculiar" && getPeculiarElement(customType!).hasStrokeStyle());
 
-export const canChangeRoundness = (type: ElementOrToolType) =>
+export const canChangeRoundness = (
+  type: ElementOrToolType,
+  customType?: string | null,
+) =>
   type === "rectangle" ||
   type === "iframe" ||
   type === "embeddable" ||
   type === "line" ||
   type === "diamond" ||
-  type === "image";
+  type === "image" ||
+  (type === "peculiar" && getPeculiarElement(customType!).hasRoundness());
 
-export const toolIsArrow = (type: ElementOrToolType) => type === "arrow";
+export const toolIsArrow = (
+  type: ElementOrToolType,
+  customType?: string | null,
+) =>
+  type === "arrow" ||
+  (type === "peculiar" && getPeculiarElement(customType!).hasArrow());
 
-export const canHaveArrowheads = (type: ElementOrToolType) => type === "arrow";
+export const canHaveArrowheads = (
+  type: ElementOrToolType,
+  customType?: string | null,
+) =>
+  type === "arrow" ||
+  (type === "peculiar" && getPeculiarElement(customType!).hasArrow());
 
 export const getElementAtPosition = (
   elements: readonly NonDeletedExcalidrawElement[],

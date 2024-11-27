@@ -117,6 +117,7 @@ import { mutateElbowArrow } from "../element/routing";
 import { LinearElementEditor } from "../element/linearElementEditor";
 import type { LocalPoint } from "../../math";
 import { pointFrom, vector } from "../../math";
+import { maybyPeculiarType } from "../element/peculiarElement";
 
 const FONT_SIZE_RELATIVE_INCREASE_STEP = 0.1;
 
@@ -269,7 +270,7 @@ export const actionChangeStrokeColor = register({
           elements,
           appState,
           (el) => {
-            return hasStrokeColor(el.type)
+            return hasStrokeColor(el.type, maybyPeculiarType(el))
               ? newElementWith(el, {
                   strokeColor: value.currentItemStrokeColor,
                 })
