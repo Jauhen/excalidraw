@@ -157,6 +157,7 @@ export const actionFinalize = register({
       if (
         appState.multiElement &&
         element.type !== "freedraw" &&
+        element.type !== "peculiar" &&
         appState.lastPointerDownWith !== "touch"
       ) {
         const { points, lastCommittedPoint } = element;
