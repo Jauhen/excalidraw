@@ -49,6 +49,7 @@ import {
   deconstructLinearOrFreeDrawElement,
   deconstructRectanguloidElement,
 } from "./utils";
+import { getPeculiarElement } from "./peculiarElement";
 
 import { getBoundTextElement } from "./textElement";
 
@@ -69,6 +70,10 @@ import type {
 export const shouldTestInside = (element: ExcalidrawElement) => {
   if (element.type === "arrow") {
     return false;
+  }
+
+  if (element.type === "peculiar") {
+    return getPeculiarElement(element.peculiarType).shouldTestInside(element);
   }
 
   const isDraggableFromInside =
@@ -258,6 +263,8 @@ export const intersectElementWithLineSegment = (
     case "freedraw":
     case "arrow":
       return intersectLinearOrFreeDrawWithLineSegment(element, line, onlyFirst);
+    case "peculiar":
+      return []; // TODO(jauhen): fix;
   }
 };
 
