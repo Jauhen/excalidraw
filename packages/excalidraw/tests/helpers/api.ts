@@ -12,6 +12,7 @@ import { newElement, newTextElement, newLinearElement } from "../../element";
 import { mutateElement } from "../../element/mutateElement";
 import {
   newArrowElement,
+  newPeculiarElement,
   newEmbeddableElement,
   newFrameElement,
   newFreeDrawElement,
@@ -24,6 +25,10 @@ import { selectGroupsForSelectedElements } from "../../groups";
 import { getSelectedElements } from "../../scene/selection";
 import { assertNever } from "../../utils";
 import { GlobalTestState, createEvent, fireEvent, act } from "../test-utils";
+
+import { registerPeculiarElement, registerPeculiarTool } from "../../element/peculiarElement";
+
+import { registerPeculiarAction } from "../../actions/peculiarAction";
 
 import type { Action } from "../../actions/types";
 import type App from "../../components/App";
@@ -41,9 +46,14 @@ import type {
   ExcalidrawElbowArrowElement,
   ExcalidrawArrowElement,
   FixedSegment,
+  ExcalidrawPeculiarElement,
 } from "../../element/types";
 import type { AppState } from "../../types";
 import type { Mutable } from "../../utility-types";
+
+import type { ExcalidrawPeculiarElementImplementation, ExcalidrawPeculiarToolImplementation} from "../../element/peculiarElement";
+import type { PeculiarAction} from "../../actions/peculiarAction";
+
 
 const readFile = util.promisify(fs.readFile);
 // so that window.h is available when App.tsx is not imported as well.
@@ -211,6 +221,7 @@ export class API {
       : never;
     elbowed?: boolean;
     fixedSegments?: FixedSegment[] | null;
+    peculiarType?: T extends "peculiar" ? ExcalidrawPeculiarElement["peculiarType"] : never;
   }): T extends "arrow" | "line"
     ? ExcalidrawLinearElement
     : T extends "freedraw"
@@ -354,6 +365,9 @@ export class API {
         break;
       case "magicframe":
         element = newMagicFrameElement({ ...base, width, height });
+        break;
+      case "peculiar":
+        element = newPeculiarElement({ type: "peculiar", peculiarType: rest.peculiarType!, ...base });
         break;
       default:
         assertNever(
@@ -510,5 +524,17 @@ export class API {
     act(() => {
       h.app.actionManager.executeAction(action);
     });
+  };
+
+  static registerPeculiarElement = (peculiarType: string, implementation: ExcalidrawPeculiarElementImplementation<any>) => {
+    registerPeculiarElement(peculiarType, implementation);
+  };
+
+  static registerPeculiarAction = (peculiarType: string, action: PeculiarAction) => {
+    registerPeculiarAction(peculiarType, action);
+  };
+
+  static registerPeculiarTool = (peculiarType: string, tool: ExcalidrawPeculiarToolImplementation) => {
+    registerPeculiarTool(peculiarType, tool);
   };
 }

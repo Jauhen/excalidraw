@@ -37,6 +37,8 @@ export const distanceToBindableElement = (
       return distanceToDiamondElement(element, p);
     case "ellipse":
       return distanceToEllipseElement(element, p);
+    case "peculiar":
+      return Number.POSITIVE_INFINITY;
   }
 };
 

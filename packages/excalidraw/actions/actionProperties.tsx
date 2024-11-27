@@ -113,6 +113,8 @@ import {
 
 import { updateElbowArrowPoints } from "../element/elbowArrow";
 
+import { maybePeculiarType } from "../element/peculiarElement";
+
 import { register } from "./register";
 
 import type {
@@ -294,7 +296,7 @@ export const actionChangeStrokeColor = register({
           elements,
           appState,
           (el) => {
-            return hasStrokeColor(el.type)
+            return hasStrokeColor(el.type, maybePeculiarType(el), false)
               ? newElementWith(el, {
                   strokeColor: value.currentItemStrokeColor,
                 })

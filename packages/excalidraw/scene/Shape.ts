@@ -15,6 +15,11 @@ import { generateFreeDrawShape } from "../renderer/renderElement";
 import { getCornerRadius, isPathALoop } from "../shapes";
 import { isTransparent, assertNever } from "../utils";
 
+import {
+  getPeculiarElement,
+  maybePeculiarType,
+} from "../element/peculiarElement";
+
 import { canChangeRoundness } from "./comparisons";
 
 import type {
@@ -47,7 +52,7 @@ function adjustRoughness(element: ExcalidrawElement): number {
     // is round & both sides above 15px
     (minSize >= 15 &&
       !!element.roundness &&
-      canChangeRoundness(element.type)) ||
+      canChangeRoundness(element.type, maybePeculiarType(element), false)) ||
     // relatively long linear element
     (isLinearElement(element) && maxSize >= 50)
   ) {
@@ -117,6 +122,24 @@ export const generateRoughOptions = (
     }
     case "arrow":
       return options;
+    case "peculiar": {
+      const implementation = getPeculiarElement(element.peculiarType);
+      if (implementation.hasBackgroundColor()) {
+        options.fillStyle = element.fillStyle;
+        options.fill = isTransparent(element.backgroundColor)
+          ? undefined
+          : element.backgroundColor;
+      } else {
+        options.fillStyle = "solid";
+        options.fill = isTransparent(element.strokeColor)
+          ? undefined
+          : element.strokeColor;
+      }
+      if (!implementation.hasStrokeWidth()) {
+        options.strokeWidth = 1;
+      }
+      return options;
+    }
     default: {
       throw new Error(`Unimplemented type ${element.type}`);
     }
@@ -530,6 +553,11 @@ export const _generateElementShape = (
       // `element.canvas` on rerenders
       return shape;
     }
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getElementShape(
+        element,
+        generator,
+      );
     default: {
       assertNever(
         element,

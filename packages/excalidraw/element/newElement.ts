@@ -49,6 +49,7 @@ import type {
   ExcalidrawArrowElement,
   FixedSegment,
   ExcalidrawElbowArrowElement,
+  ExcalidrawPeculiarElement,
 } from "./types";
 import type { AppState } from "../types";
 import type { MarkOptional, Merge, Mutable } from "../utility-types";
@@ -537,6 +538,24 @@ export const newImageElement = (
     scale: opts.scale ?? [1, 1],
     crop: opts.crop ?? null,
   };
+};
+
+export const newPeculiarElement = <T extends ExcalidrawPeculiarElement>(
+  opts: {
+    type: T["type"];
+    peculiarType: T["peculiarType"];
+    lineHeight?: string;
+  } & ElementConstructorOpts,
+): NonDeleted<T> => {
+  const peculiarElement = newElementWith(
+    {
+      ..._newElementBase<ExcalidrawPeculiarElement>("peculiar", opts),
+      type: "peculiar",
+      peculiarType: opts.peculiarType,
+    },
+    {},
+  ) as T;
+  return peculiarElement;
 };
 
 // Simplified deep clone for the purpose of cloning ExcalidrawElement.

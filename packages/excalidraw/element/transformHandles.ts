@@ -332,6 +332,9 @@ export const shouldShowBoundingBox = (
     return true;
   }
   const element = elements[0];
+  if (element?.type === "peculiar") {
+    return false;
+  }
   if (isElbowArrow(element)) {
     // Elbow arrows cannot be resized as single selected elements
     return false;
