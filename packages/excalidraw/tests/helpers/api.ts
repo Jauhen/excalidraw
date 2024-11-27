@@ -12,6 +12,7 @@ import type {
   ExcalidrawElbowArrowElement,
   ExcalidrawArrowElement,
   FixedSegment,
+  ExcalidrawPeculiarElement,
 } from "../../element/types";
 import { newElement, newTextElement, newLinearElement } from "../../element";
 import { DEFAULT_VERTICAL_ALIGN, ROUNDNESS } from "../../constants";
@@ -23,6 +24,7 @@ import path from "path";
 import { getMimeType } from "../../data/blob";
 import {
   newArrowElement,
+  newPeculiarElement,
   newEmbeddableElement,
   newFrameElement,
   newFreeDrawElement,
@@ -40,6 +42,10 @@ import { createTestHook } from "../../components/App";
 import type { Action } from "../../actions/types";
 import { mutateElement } from "../../element/mutateElement";
 import { pointFrom, type LocalPoint, type Radians } from "../../../math";
+import type { ExcalidrawPeculiarElementImplementation, ExcalidrawPeculiarToolImplementation} from "../../element/peculiarElement";
+import { registerPeculiarElement, registerPeculiarTool } from "../../element/peculiarElement";
+import type { PeculiarAction} from "../../actions/peculiarAction";
+import { registerPeculiarAction } from "../../actions/peculiarAction";
 
 const readFile = util.promisify(fs.readFile);
 // so that window.h is available when App.tsx is not imported as well.
@@ -199,6 +205,7 @@ export class API {
       : never;
     elbowed?: boolean;
     fixedSegments?: FixedSegment[] | null;
+    peculiarType?: T extends "peculiar" ? ExcalidrawPeculiarElement["peculiarType"] : never;
   }): T extends "arrow" | "line"
     ? ExcalidrawLinearElement
     : T extends "freedraw"
@@ -344,6 +351,9 @@ export class API {
       case "magicframe":
         element = newMagicFrameElement({ ...base, width, height });
         break;
+      case "peculiar":
+        element = newPeculiarElement({ type: "peculiar", peculiarType: rest.peculiarType!, ...base });
+        break;
       default:
         assertNever(
           type,
@@ -421,5 +431,17 @@ export class API {
     act(() => {
       h.app.actionManager.executeAction(action);
     });
+  };
+
+  static registerPeculiarElement = (peculiarType: string, implementation: ExcalidrawPeculiarElementImplementation<any>) => {
+    registerPeculiarElement(peculiarType, implementation);
+  };
+
+  static registerPeculiarAction = (peculiarType: string, action: PeculiarAction) => {
+    registerPeculiarAction(peculiarType, action);
+  };
+
+  static registerPeculiarTool = (peculiarType: string, tool: ExcalidrawPeculiarToolImplementation) => {
+    registerPeculiarTool(peculiarType, tool);
   };
 }

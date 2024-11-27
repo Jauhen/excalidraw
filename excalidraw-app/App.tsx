@@ -131,7 +131,47 @@ import DebugCanvas, {
 } from "./components/DebugCanvas";
 import { AIComponents } from "./components/AI";
 import { ExcalidrawPlusIframeExport } from "./ExcalidrawPlusIframeExport";
+import { EUCLID_POINT, euclidPointImplementation } from "./euclid/point";
+import {
+  EUCLID_POINT_SIZE_ACTION,
+  EuclidPointSizeAction,
+} from "./euclid/pointSizeAction";
 import { isElementLink } from "../packages/excalidraw/element/elementLink";
+import { EUCLID_LINE, euclidLineImplementation } from "./euclid/line";
+import defaultEuclidLang from "./euclid/locales/en.json";
+import { EUCLID_CIRCLE, euclidCircleImplementation } from "./euclid/circle";
+import {
+  EUCLID_POINT_TOOL,
+  euclidPointToolImplementation,
+} from "./euclid/pointTool";
+import {
+  EUCLID_LINE_TOOL,
+  EUCLID_RAY_TOOL,
+  EUCLID_SEGMENT_TOOL,
+  getEuclidLineToolImplementation,
+} from "./euclid/lineTool";
+import {
+  EUCLID_CIRCLE_TOOL,
+  euclidCircleToolImplementation,
+} from "./euclid/circleTool";
+import {
+  EUCLID_MIDPOINT_TOOL,
+  euclidMidpointToolImplementation,
+} from "./euclid/midpointTool";
+import {
+  EUCLID_REFLECT_TOOL,
+  euclidReflectToolImplementation,
+} from "./euclid/reflectTool";
+import {
+  EUCLID_ANGLE_TOOL,
+  euclidAngleToolImplementation,
+} from "./euclid/angleTool";
+import { EUCLID_ANGLE, euclidAngleImplementation } from "./euclid/angle";
+import { EUCLID_MARKS_ACTION, EuclidMarksAction } from "./euclid/marksAction";
+import {
+  EUCLID_ANGLE_ARCS_ACTION,
+  EuclidAngleArcsAction,
+} from "./euclid/angleArcsAction";
 
 polyfill();
 
@@ -205,6 +245,67 @@ const initializeScene = async (opts: {
     | { isExternalScene: false; id?: null; key?: null }
   )
 > => {
+  opts.excalidrawAPI.registerPeculiarAction(
+    EUCLID_POINT_SIZE_ACTION,
+    EuclidPointSizeAction,
+  );
+  opts.excalidrawAPI.registerPeculiarAction(
+    EUCLID_MARKS_ACTION,
+    EuclidMarksAction,
+  );
+  opts.excalidrawAPI.registerPeculiarAction(
+    EUCLID_ANGLE_ARCS_ACTION,
+    EuclidAngleArcsAction,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_POINT,
+    euclidPointImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_LINE,
+    euclidLineImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_CIRCLE,
+    euclidCircleImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarElement(
+    EUCLID_ANGLE,
+    euclidAngleImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_POINT_TOOL,
+    euclidPointToolImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_SEGMENT_TOOL,
+    getEuclidLineToolImplementation("segment"),
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_LINE_TOOL,
+    getEuclidLineToolImplementation("line"),
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_RAY_TOOL,
+    getEuclidLineToolImplementation("ray"),
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_CIRCLE_TOOL,
+    euclidCircleToolImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_MIDPOINT_TOOL,
+    euclidMidpointToolImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_REFLECT_TOOL,
+    euclidReflectToolImplementation,
+  );
+  opts.excalidrawAPI.registerPeculiarTool(
+    EUCLID_ANGLE_TOOL,
+    euclidAngleToolImplementation,
+  );
+
   const searchParams = new URLSearchParams(window.location.search);
   const id = searchParams.get("id");
   const jsonBackendMatch = window.location.hash.match(
@@ -858,6 +959,8 @@ const ExcalidrawWrapper = () => {
             excalidrawAPI?.scrollToContent(element.link, { animate: true });
           }
         }}
+        addtionalTranslationFolder={["/euclid/locales"]}
+        defaultAdditionalTranslations={defaultEuclidLang}
       >
         <AppMainMenu
           onCollabDialogOpen={onCollabDialogOpen}
@@ -891,7 +994,13 @@ const ExcalidrawWrapper = () => {
             </OverwriteConfirmDialog.Action>
           )}
         </OverwriteConfirmDialog>
-        <AppFooter onChange={() => excalidrawAPI?.refresh()} />
+        {excalidrawAPI && (
+          <AppFooter
+            onChange={() => excalidrawAPI?.refresh()}
+            excalidrawAPI={excalidrawAPI}
+            appState={excalidrawAPI?.getAppState()}
+          />
+        )}
         {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />}
 
         <TTDDialogTrigger />
