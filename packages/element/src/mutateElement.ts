@@ -18,7 +18,13 @@ import { ShapeCache } from "./ShapeCache";
 import { updateElbowArrowPoints } from "./elbowArrow";
 import { isElbowArrow } from "./typeChecks";
 
-import type { ExcalidrawElement, NonDeletedSceneElementsMap } from "./types";
+import { getPeculiarElement } from "./peculiarElement";
+
+import type {
+  ExcalidrawElement,
+  NonDeletedSceneElementsMap,
+  ExcalidrawPeculiarElement,
+} from "./types";
 
 export type ElementUpdate<TElement extends ExcalidrawElement> = Omit<
   Partial<TElement>,
@@ -82,6 +88,15 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
     };
   } else if (typeof points !== "undefined") {
     updates = { ...getSizeFromPoints(points), ...updates };
+  }
+
+  if (element.type === "peculiar") {
+    return getPeculiarElement(element.peculiarType).mutateElement(
+      element,
+      updates as ElementUpdate<Mutable<ExcalidrawPeculiarElement>>,
+      informMutation,
+      true,
+    ) as TElement;
   }
 
   for (const key in updates) {

@@ -16,6 +16,11 @@ import { isPathALoop } from "@excalidraw/element/shapes";
 
 import { isInvisiblySmallElement } from "@excalidraw/element/sizeHelpers";
 
+import type {
+  ExcalidrawLinearElement,
+  ExcalidrawPeculiarElement,
+} from "@excalidraw/element/types";
+
 import { t } from "../i18n";
 import { resetCursor } from "../cursor";
 import { done } from "../components/icons";
@@ -80,7 +85,9 @@ export const actionFinalize = register({
     }
 
     const multiPointElement = appState.multiElement
-      ? appState.multiElement
+      ? (appState.multiElement as
+          | ExcalidrawLinearElement
+          | ExcalidrawPeculiarElement)
       : appState.newElement?.type === "freedraw"
       ? appState.newElement
       : null;
@@ -89,6 +96,7 @@ export const actionFinalize = register({
       // pen and mouse have hover
       if (
         multiPointElement.type !== "freedraw" &&
+        multiPointElement.type !== "peculiar" &&
         appState.lastPointerDownWith !== "touch"
       ) {
         const { points, lastCommittedPoint } = multiPointElement;
@@ -112,7 +120,9 @@ export const actionFinalize = register({
       // If the multi point line closes the loop,
       // set the last point to first point.
       // This ensures that loop remains closed at different scales.
-      const isLoop = isPathALoop(multiPointElement.points, appState.zoom.value);
+      const isLoop =
+        multiPointElement.type !== "peculiar" &&
+        isPathALoop(multiPointElement.points, appState.zoom.value);
       if (
         multiPointElement.type === "line" ||
         multiPointElement.type === "freedraw"
