@@ -45,6 +45,7 @@ import type {
   ElementsMap,
   ExcalidrawArrowElement,
   ExcalidrawElbowArrowElement,
+  ExcalidrawPeculiarElement,
 } from "./types";
 
 export type ElementConstructorOpts = MarkOptional<
@@ -531,4 +532,22 @@ export const newImageElement = (
     scale: opts.scale ?? [1, 1],
     crop: opts.crop ?? null,
   };
+};
+
+export const newPeculiarElement = <T extends ExcalidrawPeculiarElement>(
+  opts: {
+    type: T["type"];
+    peculiarType: T["peculiarType"];
+    lineHeight?: string;
+  } & ElementConstructorOpts,
+): NonDeleted<T> => {
+  const peculiarElement = newElementWith(
+    {
+      ..._newElementBase<ExcalidrawPeculiarElement>("peculiar", opts),
+      type: "peculiar",
+      peculiarType: opts.peculiarType,
+    },
+    {},
+  ) as T;
+  return peculiarElement;
 };

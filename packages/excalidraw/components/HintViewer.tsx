@@ -12,13 +12,22 @@ import { getShortcutKey } from "@excalidraw/common";
 
 import { isNodeInFlowchart } from "@excalidraw/element";
 
+import { getPeculiarTool } from "@excalidraw/element/peculiarElement";
+
+import type { ExcalidrawPeculiarElement } from "@excalidraw/element/types";
+
 import { t } from "../i18n";
 import { isEraserActive } from "../appState";
 import { isGridModeEnabled } from "../snapping";
 
 import "./HintViewer.scss";
 
-import type { AppClassProperties, Device, UIAppState } from "../types";
+import type {
+  ActiveTool,
+  AppClassProperties,
+  Device,
+  UIAppState,
+} from "../types";
 
 interface HintViewerProps {
   appState: UIAppState;
@@ -75,6 +84,14 @@ const getHints = ({
 
   if (appState.activeTool.type === "image" && appState.pendingImageElementId) {
     return t("hints.placeImage");
+  }
+
+  if (appState.activeTool.type === "peculiar") {
+    if (activeTool.customType) {
+      return getPeculiarTool((activeTool as ActiveTool).customType!).getHint(
+        appState.multiElement as ExcalidrawPeculiarElement,
+      );
+    }
   }
 
   const selectedElements = app.scene.getSelectedElements(appState);

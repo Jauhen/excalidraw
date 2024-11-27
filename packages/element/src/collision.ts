@@ -40,6 +40,7 @@ import {
   deconstructDiamondElement,
   deconstructRectanguloidElement,
 } from "./utils";
+import { getPeculiarElement } from "./peculiarElement";
 
 import type {
   ElementsMap,
@@ -53,6 +54,10 @@ import type {
 export const shouldTestInside = (element: ExcalidrawElement) => {
   if (element.type === "arrow") {
     return false;
+  }
+
+  if (element.type === "peculiar") {
+    return getPeculiarElement(element.peculiarType).shouldTestInside(element);
   }
 
   const isDraggableFromInside =
