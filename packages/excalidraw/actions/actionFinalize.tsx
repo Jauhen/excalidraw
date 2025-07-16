@@ -208,7 +208,8 @@ export const actionFinalize = register<FormData>({
         appState.selectedLinearElement &&
         appState.multiElement &&
         element.type !== "freedraw" &&
-        appState.lastPointerDownWith !== "touch"
+        appState.lastPointerDownWith !== "touch" &&
+        element.type !== "peculiar"
       ) {
         const { points } = element;
         const { lastCommittedPoint } = appState.selectedLinearElement;

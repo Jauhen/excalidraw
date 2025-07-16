@@ -11,6 +11,8 @@ import WelcomeScreen from "./components/welcome-screen/WelcomeScreen";
 import { defaultLang } from "./i18n";
 import { EditorJotaiProvider, editorJotaiStore } from "./editor-jotai";
 import polyfill from "./polyfill";
+import DropdownMenu from "./components/dropdownMenu/DropdownMenu";
+import Stack from "./components/Stack";
 
 import "./css/app.scss";
 import "./css/styles.scss";
@@ -232,7 +234,7 @@ export {
 export { getTextFromElements } from "@excalidraw/element";
 export { isInvisiblySmallElement } from "@excalidraw/element";
 
-export { defaultLang, useI18n, languages } from "./i18n";
+export { defaultLang, useI18n, languages, t } from "./i18n";
 export {
   restoreAppState,
   restoreElement,
@@ -290,6 +292,10 @@ export { useEditorInterface, useStylesPanelMode } from "./components/App";
 export { WelcomeScreen };
 export { LiveCollaborationTrigger };
 export { Stats } from "./components/Stats";
+export { Island } from "./components/Island";
+export { DropdownMenu };
+export { ToolButton } from "./components/ToolButton";
+export { Stack };
 
 export { DefaultSidebar } from "./components/DefaultSidebar";
 export { TTDDialog } from "./components/TTDDialog/TTDDialog";

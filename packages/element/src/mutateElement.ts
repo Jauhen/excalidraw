@@ -4,6 +4,8 @@ import {
   getUpdatedTimestamp,
 } from "@excalidraw/common";
 
+import { getPeculiarElement } from "@excalidraw/custom";
+
 import type { Radians } from "@excalidraw/math";
 
 import type { Mutable } from "@excalidraw/common/utility-types";
@@ -19,6 +21,7 @@ import type {
   ExcalidrawElbowArrowElement,
   ExcalidrawElement,
   NonDeletedSceneElementsMap,
+  ExcalidrawPeculiarElement,
 } from "./types";
 
 export type ElementUpdate<TElement extends ExcalidrawElement> = Omit<
@@ -70,6 +73,15 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
     };
   } else if (typeof points !== "undefined") {
     updates = { ...getSizeFromPoints(points), ...updates };
+  }
+
+  if (element.type === "peculiar") {
+    return getPeculiarElement(element.peculiarType).mutateElement(
+      element,
+      elementsMap,
+      updates as ElementUpdate<Mutable<ExcalidrawPeculiarElement>>,
+      true,
+    ) as TElement;
   }
 
   for (const key in updates) {

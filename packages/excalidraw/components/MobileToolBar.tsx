@@ -137,7 +137,8 @@ export const MobileToolBar = ({
         app.setActiveTool({ type: "selection" });
       }
     } else {
-      app.setActiveTool({ type: toolType as ToolType });
+      // TODO: handle custom type for peculiar tools
+      app.setActiveTool({ type: toolType as ToolType, customType: "" });
     }
   };
 

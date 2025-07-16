@@ -262,6 +262,7 @@ const getRelevantAppStateProps = (
   frameRendering: appState.frameRendering,
   shouldCacheIgnoreZoom: appState.shouldCacheIgnoreZoom,
   exportScale: appState.exportScale,
+  peculiar: appState.peculiar,
 });
 
 const areEqual = (

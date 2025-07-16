@@ -36,6 +36,7 @@ import { getElementAbsoluteCoords } from "@excalidraw/element";
 
 import type {
   ExcalidrawElement,
+  ExcalidrawPeculiarElement,
   ExcalidrawTextElementWithContainer,
   NonDeletedExcalidrawElement,
 } from "@excalidraw/element/types";
@@ -622,6 +623,30 @@ const renderElementToSvg = (
       }
       break;
     }
+    case "peculiar": {
+      const node = renderPeculiarElementToSvg(
+        element,
+        rsvg,
+        svgRoot,
+        offsetX,
+        offsetY,
+        opacity,
+        degree,
+        cx,
+        cy,
+      );
+
+      const g = maybeWrapNodesInFrameClipPath(
+        element,
+        root,
+        [node],
+        renderConfig.frameRendering,
+        elementsMap,
+      );
+
+      addToRoot(g || node, element);
+      break;
+    }
     default: {
       if (isTextElement(element)) {
         const node = svgRoot.ownerDocument.createElementNS(SVG_NS, "g");
@@ -694,6 +719,65 @@ const renderElementToSvg = (
       }
     }
   }
+};
+
+const renderPeculiarElementToSvg = (
+  element: ExcalidrawPeculiarElement,
+  rsvg: RoughSVG,
+  svgRoot: SVGElement,
+  offsetX: number,
+  offsetY: number,
+  opacity: number,
+  degree: number,
+  cx: number,
+  cy: number,
+): SVGGElement => {
+  const elementShapes = ShapeCache.generateElementShape(element, null);
+  if (elementShapes instanceof Array) {
+    const group = svgRoot.ownerDocument!.createElementNS(SVG_NS, "g");
+    for (const shape of elementShapes) {
+      if (shape === null) {
+        continue;
+      }
+      const node = roughSVGDrawWithPrecision(
+        rsvg,
+        shape,
+        MAX_DECIMALS_FOR_SVG_EXPORT,
+      );
+      if (opacity !== 1) {
+        node.setAttribute("stroke-opacity", `${opacity}`);
+        node.setAttribute("fill-opacity", `${opacity}`);
+      }
+      node.setAttribute("stroke-linecap", "round");
+      node.setAttribute(
+        "transform",
+        `translate(${offsetX || 0} ${
+          offsetY || 0
+        }) rotate(${degree} ${cx} ${cy})`,
+      );
+
+      group.appendChild(node);
+    }
+    return group;
+  }
+  if (elementShapes === null) {
+    return svgRoot.ownerDocument!.createElementNS(SVG_NS, "g");
+  }
+  const node = roughSVGDrawWithPrecision(
+    rsvg,
+    elementShapes,
+    MAX_DECIMALS_FOR_SVG_EXPORT,
+  );
+  if (opacity !== 1) {
+    node.setAttribute("stroke-opacity", `${opacity}`);
+    node.setAttribute("fill-opacity", `${opacity}`);
+  }
+  node.setAttribute("stroke-linecap", "round");
+  node.setAttribute(
+    "transform",
+    `translate(${offsetX || 0} ${offsetY || 0}) rotate(${degree} ${cx} ${cy})`,
+  );
+  return node;
 };
 
 export const renderSceneToSvg = (

@@ -24,6 +24,8 @@ import {
   applyDarkModeFilter,
 } from "@excalidraw/common";
 
+import { getPeculiarElement } from "@excalidraw/custom";
+
 import type {
   AppState,
   StaticCanvasAppState,
@@ -76,6 +78,8 @@ import type {
   ExcalidrawFrameLikeElement,
   NonDeletedSceneElementsMap,
   ElementsMap,
+  ExcalidrawPeculiarElement,
+  NonDeleted,
 } from "./types";
 
 import type { RoughCanvas } from "roughjs/bin/canvas";
@@ -471,6 +475,17 @@ const drawElementOnCanvas = (
         );
       } else {
         drawImagePlaceholder(element, context);
+      }
+      break;
+    }
+    case "peculiar": {
+      context.lineJoin = "round";
+      context.lineCap = "round";
+      const shapes = ShapeCache.get(element, null)!;
+      if (shapes instanceof Array) {
+        shapes.forEach((shape) => rc.draw(shape));
+      } else {
+        rc.draw(shapes);
       }
       break;
     }
@@ -993,6 +1008,18 @@ export const renderElement = (
       }
       break;
     }
+    case "peculiar": {
+      renderPeculiarElement(
+        element,
+        elementsMap,
+        allElementsMap,
+        rc,
+        context,
+        renderConfig,
+        appState,
+      );
+      break;
+    }
     default: {
       // @ts-ignore
       throw new Error(`Unimplemented type ${element.type}`);
@@ -1000,6 +1027,187 @@ export const renderElement = (
   }
 
   context.globalAlpha = 1;
+};
+
+const renderPeculiarElement = (
+  element: NonDeleted<ExcalidrawPeculiarElement>,
+  elementsMap: RenderableElementsMap,
+  allElementsMap: NonDeletedSceneElementsMap,
+  rc: RoughCanvas,
+  context: CanvasRenderingContext2D,
+  renderConfig: StaticCanvasRenderConfig,
+  appState: StaticCanvasAppState | InteractiveCanvasAppState,
+) => {
+  ShapeCache.generateElementShape(element, renderConfig);
+  const implementation = getPeculiarElement(element.peculiarType);
+  if (renderConfig.isExporting) {
+    if (implementation.isFullScreenElement(element)) {
+      const scale = context.getTransform().a;
+      // getNormalizedCanvasDimensions
+      const normalizedWidth = context.canvas.width / scale;
+      const normalizedHeight = context.canvas.height / scale; // getNormalizedCanvasDimensions(context.canvas,
+
+      const canvas = document.createElement("canvas");
+      const localContext = canvas.getContext("2d")!;
+      canvas.width = normalizedWidth;
+      canvas.height = normalizedHeight;
+      localContext.save();
+      localContext.scale(scale, scale);
+      localContext.translate(appState.scrollX, appState.scrollY);
+
+      const rc = rough.canvas(canvas);
+      const shapes = implementation.getFullScreenElementShape(element, rc, {
+        x: -appState.scrollX,
+        y: -appState.scrollY,
+        width: normalizedWidth / scale,
+        height: normalizedHeight / scale,
+      });
+      shapes.forEach((shape) => {
+        rc.draw(shape);
+      });
+      localContext.restore();
+
+      context.save();
+      context.scale(1, 1);
+      context.drawImage(
+        canvas,
+        0,
+        0,
+        canvas.width / scale,
+        canvas.height / scale,
+      );
+      context.restore();
+
+      return;
+    }
+
+    const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
+    const cx = (x1 + x2) / 2 + appState.scrollX;
+    const cy = (y1 + y2) / 2 + appState.scrollY;
+    const shiftX = (x2 - x1) / 2 - (element.x - x1);
+    const shiftY = (y2 - y1) / 2 - (element.y - y1);
+    context.save();
+    context.translate(cx, cy);
+    context.rotate(element.angle);
+    context.translate(-shiftX, -shiftY);
+    drawElementOnCanvas(element, rc, context, renderConfig);
+    context.restore();
+    return;
+  }
+  if (implementation.isFullScreenElement(element)) {
+    // TODO: add caching.
+    const zoom: Zoom = renderConfig ? appState.zoom : appState.zoom; //defaultAppState.zoom;
+    const scale = zoom.value;
+    const canvas = document.createElement("canvas");
+    const localContext = canvas.getContext("2d")!;
+    canvas.width = appState.width * window.devicePixelRatio;
+    canvas.height = appState.height * window.devicePixelRatio;
+    localContext.save();
+    localContext.scale(
+      window.devicePixelRatio * scale,
+      window.devicePixelRatio * scale,
+    );
+    localContext.translate(appState.scrollX, appState.scrollY);
+
+    const rc = rough.canvas(canvas);
+    const shapes = implementation.getFullScreenElementShape(element, rc, {
+      x: -appState.scrollX,
+      y: -appState.scrollY,
+      width: appState.width / scale,
+      height: appState.height / scale,
+    });
+    shapes.forEach((shape) => {
+      rc.draw(shape);
+    });
+    localContext.restore();
+
+    context.save();
+    context.scale(1 / window.devicePixelRatio, 1 / window.devicePixelRatio);
+    context.drawImage(
+      canvas,
+      0,
+      0,
+      canvas.width / scale,
+      canvas.height / scale,
+    );
+    context.restore();
+
+    return;
+  }
+
+  const elementWithCanvas = generateElementWithCanvas(
+    element,
+    allElementsMap,
+    renderConfig,
+    appState,
+  );
+
+  if (!elementWithCanvas) {
+    return;
+  }
+
+  const currentImageSmoothingStatus = context.imageSmoothingEnabled;
+
+  if (
+    // do not disable smoothing during zoom as blurry shapes look better
+    // on low resolution (while still zooming in) than sharp ones
+    !appState?.shouldCacheIgnoreZoom &&
+    // angle is 0 -> always disable smoothing
+    (!element.angle ||
+      // or check if angle is a right angle in which case we can still
+      // disable smoothing without adversely affecting the result
+      // We need less-than comparison because of FP artihmetic
+      isRightAngleRads(element.angle))
+  ) {
+    // Disabling smoothing makes output much sharper, especially for
+    // text. Unless for non-right angles, where the aliasing is really
+    // terrible on Chromium.
+    //
+    // Note that `context.imageSmoothingQuality="high"` has almost
+    // zero effect.
+    //
+    context.imageSmoothingEnabled = false;
+  }
+
+  if (
+    element.id === appState.croppingElementId &&
+    isImageElement(elementWithCanvas.element) &&
+    elementWithCanvas.element.crop !== null
+  ) {
+    context.save();
+    context.globalAlpha = 0.1;
+
+    const uncroppedElementCanvas = generateElementCanvas(
+      getUncroppedImageElement(elementWithCanvas.element, elementsMap),
+      allElementsMap,
+      appState.zoom,
+      renderConfig,
+      appState,
+    );
+
+    if (uncroppedElementCanvas) {
+      drawElementFromCanvas(
+        uncroppedElementCanvas,
+        context,
+        renderConfig,
+        appState,
+        allElementsMap,
+      );
+    }
+
+    context.restore();
+  }
+
+  drawElementFromCanvas(
+    elementWithCanvas,
+    context,
+    renderConfig,
+    appState,
+    allElementsMap,
+  );
+
+  // reset
+  context.imageSmoothingEnabled = currentImageSmoothingStatus;
 };
 
 export function getFreedrawOutlineAsSegments(

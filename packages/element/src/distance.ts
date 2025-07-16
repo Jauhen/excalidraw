@@ -6,6 +6,8 @@ import {
 
 import { ellipse, ellipseDistanceFromPoint } from "@excalidraw/math/ellipse";
 
+import { getPeculiarElement } from "@excalidraw/custom";
+
 import type { GlobalPoint, Radians } from "@excalidraw/math";
 
 import {
@@ -49,6 +51,11 @@ export const distanceToElement = (
     case "arrow":
     case "freedraw":
       return distanceToLinearOrFreeDraElement(element, p);
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).getDistanceToElement(
+        element,
+        p,
+      );
   }
 };
 

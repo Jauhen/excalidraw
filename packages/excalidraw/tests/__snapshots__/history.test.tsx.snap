@@ -77,6 +77,7 @@ exports[`history > multiplayer undo/redo > conflicts in arrows and their bindabl
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -711,6 +712,7 @@ exports[`history > multiplayer undo/redo > conflicts in arrows and their bindabl
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -1278,6 +1280,7 @@ exports[`history > multiplayer undo/redo > conflicts in arrows and their bindabl
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -1641,6 +1644,7 @@ exports[`history > multiplayer undo/redo > conflicts in arrows and their bindabl
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -2006,6 +2010,7 @@ exports[`history > multiplayer undo/redo > conflicts in arrows and their bindabl
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -2269,6 +2274,7 @@ exports[`history > multiplayer undo/redo > conflicts in arrows and their bindabl
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -2728,6 +2734,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -3034,6 +3041,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -3356,6 +3364,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -3653,6 +3662,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -3942,6 +3952,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -4180,6 +4191,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -4440,6 +4452,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -4714,6 +4727,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -4946,6 +4960,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -5178,6 +5193,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -5428,6 +5444,7 @@ exports[`history > multiplayer undo/redo > conflicts in bound text elements and 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -5687,6 +5704,7 @@ exports[`history > multiplayer undo/redo > conflicts in frames and their childre
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -5945,6 +5963,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -6277,6 +6296,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -6707,6 +6727,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -7087,6 +7108,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -7399,6 +7421,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -7694,6 +7717,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -7927,6 +7951,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -8282,6 +8307,7 @@ exports[`history > multiplayer undo/redo > should iterate through the history wh
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -8637,6 +8663,7 @@ exports[`history > multiplayer undo/redo > should not let remote changes to inte
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -9046,6 +9073,7 @@ exports[`history > multiplayer undo/redo > should not let remote changes to inte
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -9328,6 +9356,7 @@ exports[`history > multiplayer undo/redo > should not let remote changes to inte
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -9595,6 +9624,7 @@ exports[`history > multiplayer undo/redo > should not override remote changes on
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -9863,6 +9893,7 @@ exports[`history > multiplayer undo/redo > should not override remote changes on
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -10101,6 +10132,7 @@ exports[`history > multiplayer undo/redo > should override remotely added groups
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -10398,6 +10430,7 @@ exports[`history > multiplayer undo/redo > should override remotely added points
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -10718,6 +10751,7 @@ exports[`history > multiplayer undo/redo > should redistribute deltas when eleme
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -10960,6 +10994,7 @@ exports[`history > multiplayer undo/redo > should redraw arrows on undo > [end o
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -11402,6 +11437,7 @@ exports[`history > multiplayer undo/redo > should update history entries after r
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -11665,6 +11701,7 @@ exports[`history > singleplayer undo/redo > remounting undo/redo buttons should 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -11903,6 +11940,7 @@ exports[`history > singleplayer undo/redo > should clear the redo stack on eleme
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -12143,6 +12181,7 @@ exports[`history > singleplayer undo/redo > should create entry when selecting f
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -12540,6 +12579,7 @@ exports[`history > singleplayer undo/redo > should create new history entry on e
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -12750,6 +12790,7 @@ exports[`history > singleplayer undo/redo > should create new history entry on e
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -12963,6 +13004,7 @@ exports[`history > singleplayer undo/redo > should create new history entry on i
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -13264,6 +13306,7 @@ exports[`history > singleplayer undo/redo > should create new history entry on i
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -13568,6 +13611,7 @@ exports[`history > singleplayer undo/redo > should create new history entry on s
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -13813,6 +13857,7 @@ exports[`history > singleplayer undo/redo > should disable undo/redo buttons whe
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -14053,6 +14098,7 @@ exports[`history > singleplayer undo/redo > should end up with no history entry 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -14293,6 +14339,7 @@ exports[`history > singleplayer undo/redo > should iterate through the history w
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -14543,6 +14590,7 @@ exports[`history > singleplayer undo/redo > should not clear the redo stack on s
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -14880,6 +14928,7 @@ exports[`history > singleplayer undo/redo > should not collapse when applying co
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -15050,6 +15099,7 @@ exports[`history > singleplayer undo/redo > should not end up with history entry
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -15340,6 +15390,7 @@ exports[`history > singleplayer undo/redo > should not end up with history entry
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -15606,6 +15657,7 @@ exports[`history > singleplayer undo/redo > should not modify anything on unrela
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -15759,6 +15811,7 @@ exports[`history > singleplayer undo/redo > should not override appstate changes
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -16047,6 +16100,7 @@ exports[`history > singleplayer undo/redo > should support appstate name or view
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -16209,6 +16263,7 @@ exports[`history > singleplayer undo/redo > should support bidirectional binding
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -16960,6 +17015,7 @@ exports[`history > singleplayer undo/redo > should support bidirectional binding
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -17609,6 +17665,7 @@ exports[`history > singleplayer undo/redo > should support bidirectional binding
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -18258,6 +18315,7 @@ exports[`history > singleplayer undo/redo > should support bidirectional binding
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -19010,6 +19068,7 @@ exports[`history > singleplayer undo/redo > should support bidirectional binding
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -19781,6 +19840,7 @@ exports[`history > singleplayer undo/redo > should support changes in elements' 
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -20264,6 +20324,7 @@ exports[`history > singleplayer undo/redo > should support duplication of groups
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -20778,6 +20839,7 @@ exports[`history > singleplayer undo/redo > should support element creation, del
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
@@ -21240,6 +21302,7 @@ exports[`history > singleplayer undo/redo > should support linear element creati
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "preferredSelectionTool": {
