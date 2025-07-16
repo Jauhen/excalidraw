@@ -1,0 +1,40 @@
+{
+  "euclid": {
+    "name": "Euclid",
+    "tools": {
+      "point": "Point",
+      "line": "Line",
+      "segment": "Segment",
+      "ray": "Ray",
+      "circle": "Circle",
+      "midpoint": "Midpoint",
+      "reflect": "Reflect",
+      "bisector": "Bisector"
+    },
+    "actions": {
+      "pointSize": {
+        "title": "Point size",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "marks": {
+        "title": "Marks",
+        "none": "None",
+        "one": "One",
+        "two": "Two",
+        "three": "Three"
+      },
+      "arcs": {
+        "title": "Arcs",
+        "right": "Right",
+        "one": "One",
+        "two": "Two",
+        "three": "Three"
+      }
+    },
+    "hints": {
+      "point": "Click to add a point with a label. Hold CtrlOrCmd and click to add a point without label"
+    }
+  }
+}
