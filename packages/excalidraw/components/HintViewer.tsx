@@ -13,6 +13,10 @@ import { isNodeInFlowchart } from "@excalidraw/element";
 
 import type { EditorInterface } from "@excalidraw/common";
 
+import { getPeculiarTool } from "@excalidraw/custom";
+
+import type { ExcalidrawPeculiarElement } from "@excalidraw/element/types";
+
 import { t } from "../i18n";
 import { getShortcutKey } from "../shortcut";
 import { isEraserActive } from "../appState";
@@ -20,7 +24,7 @@ import { isGridModeEnabled } from "../snapping";
 
 import "./HintViewer.scss";
 
-import type { AppClassProperties, UIAppState } from "../types";
+import type { ActiveTool, AppClassProperties, UIAppState } from "../types";
 
 interface HintViewerProps {
   appState: UIAppState;
@@ -101,6 +105,14 @@ const getHints = ({
 
   if (activeTool.type === "embeddable") {
     return t("hints.embeddable");
+  }
+
+  if (appState.activeTool.type === "peculiar") {
+    if (activeTool.customType) {
+      return getPeculiarTool((activeTool as ActiveTool).customType!).getHint(
+        appState.multiElement as ExcalidrawPeculiarElement,
+      );
+    }
   }
 
   if (

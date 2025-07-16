@@ -18,6 +18,8 @@ import {
   ellipseSegmentInterceptPoints,
 } from "@excalidraw/math/ellipse";
 
+import { getPeculiarElement } from "@excalidraw/custom";
+
 import type {
   Curve,
   GlobalPoint,
@@ -80,6 +82,10 @@ import type {
 export const shouldTestInside = (element: ExcalidrawElement) => {
   if (element.type === "arrow") {
     return false;
+  }
+
+  if (element.type === "peculiar") {
+    return getPeculiarElement(element.peculiarType).shouldTestInside(element);
   }
 
   const isDraggableFromInside =
@@ -466,6 +472,14 @@ export const intersectElementWithLineSegment = (
     case "freedraw":
     case "arrow":
       return intersectLinearOrFreeDrawWithLineSegment(element, line, onlyFirst);
+    case "peculiar":
+      return getPeculiarElement(element.peculiarType).intersectWithLineSegment(
+        element,
+        elementsMap,
+        line,
+        offset,
+        onlyFirst,
+      );
   }
 };
 

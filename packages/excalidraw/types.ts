@@ -32,6 +32,7 @@ import type {
   OrderedExcalidrawElement,
   ExcalidrawNonSelectionElement,
   BindMode,
+  ExcalidrawPeculiarElement,
 } from "@excalidraw/element/types";
 
 import type {
@@ -47,6 +48,13 @@ import type {
   EphemeralIncrement,
 } from "@excalidraw/element";
 import type { GlobalPoint } from "@excalidraw/math";
+
+import type {
+  ExcalidrawPeculiarElementImplementation,
+  ExcalidrawPeculiarToolImplementation,
+} from "@excalidraw/custom";
+
+import type { PeculiarAction } from "@excalidraw/custom";
 
 import type { Action } from "./actions/types";
 import type { Spreadsheet } from "./charts";
@@ -155,15 +163,19 @@ export type ToolType =
   | "frame"
   | "magicframe"
   | "embeddable"
-  | "laser";
+  | "laser"
+  | "peculiar";
 
 export type ElementOrToolType = ExcalidrawElementType | ToolType | "custom";
 
 export type ActiveTool =
-  | {
-      type: ToolType;
-      customType: null;
-    }
+  | (
+      | {
+          type: Exclude<ToolType, "peculiar">;
+          customType: null;
+        }
+      | { type: Extract<ToolType, "peculiar">; customType: string }
+    )
   | {
       type: "custom";
       customType: string;
@@ -244,6 +256,8 @@ export type InteractiveCanvasAppState = Readonly<
     shouldCacheIgnoreZoom: AppState["shouldCacheIgnoreZoom"];
     exportScale: AppState["exportScale"];
     currentItemArrowType: AppState["currentItemArrowType"];
+    // Custom properties for peculiar elements/tools
+    peculiar: AppState["peculiar"];
   }
 >;
 
@@ -295,7 +309,10 @@ export interface AppState {
    * multiElement is for multi-point linear element that's created by clicking as opposed to dragging
    * - when set and present, the editor will handle linear element creation logic accordingly
    */
-  multiElement: NonDeleted<ExcalidrawLinearElement> | null;
+  multiElement:
+    | NonDeleted<ExcalidrawLinearElement>
+    | NonDeleted<ExcalidrawPeculiarElement>
+    | null;
   /**
    * decoupled from newElement, dragging selection only creates selectionElement
    * - set on pointer down, updated during pointer move
@@ -468,6 +485,8 @@ export interface AppState {
   // and also remove groupId from this map
   lockedMultiSelections: { [groupId: string]: true };
   bindMode: BindMode;
+
+  peculiar: Record<string, any>;
 }
 
 export type SearchMatch = {
@@ -979,6 +998,18 @@ export interface ExcalidrawImperativeAPI {
   ) => UnsubscribeCallback;
   onStateChange: InstanceType<typeof App>["onStateChange"];
   onEvent: InstanceType<typeof App>["onEvent"];
+  registerPeculiarElement: (
+    peculiarType: string,
+    implementation: ExcalidrawPeculiarElementImplementation<any>,
+  ) => void;
+  registerPeculiarAction: (
+    peculiarType: string,
+    action: PeculiarAction,
+  ) => void;
+  registerPeculiarTool: (
+    toolType: string,
+    tool: ExcalidrawPeculiarToolImplementation,
+  ) => void;
 }
 
 export type FrameNameBounds = {

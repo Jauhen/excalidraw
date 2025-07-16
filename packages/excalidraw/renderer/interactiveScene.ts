@@ -58,6 +58,8 @@ import {
   isFocusPointVisible,
 } from "@excalidraw/element";
 
+import { getPeculiarElement } from "@excalidraw/custom";
+
 import type {
   TransformHandles,
   TransformHandleType,
@@ -71,6 +73,7 @@ import type {
   ExcalidrawFrameLikeElement,
   ExcalidrawImageElement,
   ExcalidrawLinearElement,
+  ExcalidrawPeculiarElement,
   ExcalidrawTextElement,
   GroupId,
   NonDeleted,
@@ -357,6 +360,9 @@ const renderBindingHighlightForBindableElement_simple = (
             });
           }
 
+          break;
+        case "peculiar":
+          // TODO: render peculiar element binding highlight
           break;
         default:
           {
@@ -699,6 +705,9 @@ const renderBindingHighlightForBindableElement_complex = (
             });
           }
 
+          break;
+        case "peculiar":
+          // TODO: render peculiar element binding highlight
           break;
         default:
           {
@@ -1733,6 +1742,28 @@ const _renderInteractiveScene = ({
       );
     }
     const selectionColor = renderConfig.selectionColor || "#000";
+
+    const isSinglePeculiarElementSelected =
+      selectedElements.length === 1 && selectedElements[0].type === "peculiar";
+    if (isSinglePeculiarElementSelected && !selectedElements[0].locked) {
+      context.save();
+      context.strokeStyle = selectionColor; //"#5e5ad8";
+      context.lineWidth = 1 / appState.zoom.value;
+      context.setLineDash([]);
+      context.translate(appState.scrollX, appState.scrollY);
+
+      getPeculiarElement(
+        (selectedElements[0] as NonDeleted<ExcalidrawPeculiarElement>)
+          .peculiarType,
+      ).renderElementSelection(
+        context,
+        appState,
+        selectedElements[0] as NonDeleted<ExcalidrawPeculiarElement>,
+        elementsMap,
+      );
+
+      context.restore();
+    }
 
     if (showBoundingBox) {
       // Optimisation for finding quickly relevant element ids
