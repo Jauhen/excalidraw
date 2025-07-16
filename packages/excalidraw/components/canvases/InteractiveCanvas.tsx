@@ -274,6 +274,7 @@ const getRelevantAppStateProps = (
   shouldCacheIgnoreZoom: appState.shouldCacheIgnoreZoom,
   exportScale: appState.exportScale,
   currentItemArrowType: appState.currentItemArrowType,
+  peculiar: appState.peculiar,
 });
 
 const areEqual = (

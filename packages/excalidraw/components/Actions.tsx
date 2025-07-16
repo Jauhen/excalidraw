@@ -1,16 +1,22 @@
 import clsx from "clsx";
-import { useRef } from "react";
+import { useRef, Fragment } from "react";
 import { Popover } from "radix-ui";
 
 import { CLASSES } from "@excalidraw/common";
 
 import { isArrowElement } from "@excalidraw/element";
 
+import { maybePeculiarType } from "@excalidraw/custom";
+
+import { getPeculiarActions, hasPeculiarActions } from "@excalidraw/custom";
+
 import type {
   ExcalidrawElement,
   NonDeletedElementsMap,
   NonDeletedSceneElementsMap,
 } from "@excalidraw/element/types";
+
+import type { PeculiarAction } from "@excalidraw/custom";
 
 import { actionToggleZenMode } from "../actions";
 
@@ -138,11 +144,13 @@ export const SelectedShapeActions = ({
   elementsMap,
   renderAction,
   app,
+  renderPeculiarAction,
 }: {
   appState: UIAppState;
   elementsMap: NonDeletedElementsMap | NonDeletedSceneElementsMap;
   renderAction: ActionManager["renderAction"];
   app: AppClassProperties;
+  renderPeculiarAction: ActionManager["renderPeculiarAction"];
 }) => {
   const targetElements = getTargetElements(elementsMap, appState);
   const predicates = getShapeActionPredicates(
@@ -182,6 +190,18 @@ export const SelectedShapeActions = ({
 
       {predicates.verticalAlign && renderAction("changeVerticalAlign")}
       {predicates.arrowheads && <>{renderAction("changeArrowhead")}</>}
+
+      {hasPeculiarActions(targetElements, appState.activeTool) && (
+        <>
+          {getPeculiarActions(targetElements, appState.activeTool).map(
+            (action: PeculiarAction) => (
+              <Fragment key={action.peculiarType}>
+                {renderPeculiarAction(action)}
+              </Fragment>
+            ),
+          )}
+        </>
+      )}
 
       {predicates.opacity && renderAction("changeOpacity")}
 

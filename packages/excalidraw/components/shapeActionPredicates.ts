@@ -33,6 +33,7 @@ import {
 import type { ElementOrToolType } from "../types";
 
 import type { AppClassProperties, UIAppState } from "../types";
+import { maybePeculiarType } from "@excalidraw/custom";
 
 export const canChangeStrokeColor = (
   appState: UIAppState,
@@ -49,11 +50,17 @@ export const canChangeStrokeColor = (
   }
 
   return (
-    (hasStrokeColor(appState.activeTool.type) &&
+    (hasStrokeColor(
+      appState.activeTool.type,
+      appState.activeTool.customType,
+      true,
+    ) &&
       commonSelectedType !== "image" &&
       commonSelectedType !== "frame" &&
       commonSelectedType !== "magicframe") ||
-    targetElements.some((element) => hasStrokeColor(element.type))
+    targetElements.some((element) =>
+      hasStrokeColor(element.type, maybePeculiarType(element), false),
+    )
   );
 };
 
@@ -85,10 +92,16 @@ export const getShapeActionPredicates = (
   // A property is relevant when it applies to the active tool (so it can be
   // preconfigured before drawing) or to any currently selected element.
   const forToolOrSelection = (
-    predicate: (type: ElementOrToolType) => boolean,
+    predicate: (
+      type: ElementOrToolType,
+      customType?: string | null,
+      isTool?: boolean,
+    ) => boolean,
   ) =>
-    predicate(activeToolType) ||
-    targetElements.some((element) => predicate(element.type));
+    predicate(activeToolType, appState.activeTool.customType, true) ||
+    targetElements.some((element) =>
+      predicate(element.type, maybePeculiarType(element), false),
+    );
 
   const singleSelected = targetElements.length === 1;
 
@@ -113,11 +126,15 @@ export const getShapeActionPredicates = (
     strokeColor: canChangeStrokeColor(appState, targetElements),
     backgroundColor: canChangeBackgroundColor(appState, targetElements),
     fill:
-      (hasBackground(activeToolType) &&
+      (hasBackground(
+        appState.activeTool.type,
+        appState.activeTool.customType,
+        true,
+      ) &&
         !isTransparent(appState.currentItemBackgroundColor)) ||
       targetElements.some(
         (element) =>
-          hasBackground(element.type) &&
+          hasBackground(element.type, maybePeculiarType(element), false) &&
           !isTransparent(element.backgroundColor),
       ),
 

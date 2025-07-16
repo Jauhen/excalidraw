@@ -69,6 +69,7 @@ exports[`exportToSvg > with default arguments 1`] = `
     "data": null,
     "shown": false,
   },
+  "peculiar": {},
   "penDetected": false,
   "penMode": false,
   "pendingImageElementId": null,

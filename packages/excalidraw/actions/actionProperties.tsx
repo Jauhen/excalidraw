@@ -67,6 +67,8 @@ import {
   toggleLinePolygonState,
 } from "@excalidraw/element";
 
+import { maybePeculiarType } from "@excalidraw/custom";
+
 import { deriveStylesPanelMode } from "@excalidraw/common";
 
 import type { LocalPoint, Radians } from "@excalidraw/math";
@@ -350,7 +352,7 @@ export const actionChangeStrokeColor = register<
           elements,
           appState,
           (el) => {
-            return hasStrokeColor(el.type)
+            return hasStrokeColor(el.type, maybePeculiarType(el), false)
               ? newElementWith(el, {
                   strokeColor: value.currentItemStrokeColor,
                 })

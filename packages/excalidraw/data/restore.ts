@@ -219,6 +219,7 @@ export const AllowedExcalidrawActiveTools: Record<
   laser: false,
   autoshape: false,
   magicframe: false,
+  peculiar: false,
 };
 
 export type RestoredDataState = {
@@ -699,6 +700,10 @@ export const restoreElement = (
     case "frame":
       return restoreElementWithProperties(element, {
         name: element.name ?? null,
+      });
+    case "peculiar":
+      return restoreElementWithProperties(element, {
+        peculiarType: element.peculiarType,
       });
 
     // Don't use default case so as to catch a missing an element type case.

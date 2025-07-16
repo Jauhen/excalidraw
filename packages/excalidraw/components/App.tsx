@@ -260,6 +260,16 @@ import {
   isNonDeletedElement,
 } from "@excalidraw/element";
 
+import {
+  getPeculiarElement,
+  getPeculiarTool,
+  maybePeculiarType,
+  registerPeculiarElement,
+  registerPeculiarTool,
+} from "@excalidraw/custom";
+
+import { registerPeculiarAction } from "@excalidraw/custom";
+
 import type { GlobalPoint, LocalPoint, Radians } from "@excalidraw/math";
 
 import type {
@@ -291,6 +301,8 @@ import type {
 } from "@excalidraw/element/types";
 
 import type { Mutable, ValueOf } from "@excalidraw/common/utility-types";
+
+import type { ExcalidrawPeculiarElement } from "@excalidraw/element/types";
 
 import {
   actionAddToLibrary,
@@ -792,6 +804,9 @@ class App extends React.Component<AppProps, AppState> {
       onUserFollow: (cb) => this.onUserFollowEmitter.on(cb),
       onStateChange: this.onStateChange,
       onEvent: this.onEvent,
+      registerPeculiarElement,
+      registerPeculiarAction,
+      registerPeculiarTool,
     };
     return api;
   }
@@ -5718,8 +5733,14 @@ class App extends React.Component<AppProps, AppState> {
 
         if (
           event.key === KEYS.G &&
-          (hasBackground(this.state.activeTool.type) ||
-            selectedElements.some((element) => hasBackground(element.type)))
+          (hasBackground(
+            this.state.activeTool.type,
+            this.state.activeTool.customType,
+            true,
+          ) ||
+            selectedElements.some((element) =>
+              hasBackground(element.type, maybePeculiarType(element), false),
+            ))
         ) {
           this.setState({ openPopup: "elementBackground" });
           event.stopPropagation();
@@ -5915,7 +5936,11 @@ class App extends React.Component<AppProps, AppState> {
   });
 
   setActiveTool = (
-    tool: ({ type: ToolType } | { type: "custom"; customType: string }) & {
+    tool: (
+      | { type: Exclude<ToolType, "peculiar"> }
+      | { type: "custom"; customType: string }
+      | { type: "peculiar"; customType: string }
+    ) & {
       locked?: boolean;
       fromSelection?: boolean;
     },
@@ -7727,8 +7752,12 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
 
-    if (this.state.multiElement && this.state.selectedLinearElement) {
-      const { multiElement, selectedLinearElement } = this.state;
+    const { multiElement, selectedLinearElement } = this.state;
+    if (
+      multiElement &&
+      selectedLinearElement &&
+      multiElement.type !== "peculiar"
+    ) {
       const { x: rx, y: ry, points } = multiElement;
       const lastPoint = points[points.length - 1];
 
@@ -7852,6 +7881,24 @@ class App extends React.Component<AppProps, AppState> {
       }
 
       return;
+    } else if (
+      multiElement &&
+      multiElement.type === "peculiar" &&
+      this.state.activeTool.type === "peculiar"
+    ) {
+      getPeculiarTool(
+        this.state.activeTool.customType,
+      ).handleMultiElementPointerMove(
+        multiElement,
+        this.scene.getNonDeletedElementsMap(),
+        {
+          x: scenePointerX,
+          y: scenePointerY,
+        },
+      );
+      this.triggerRender(true);
+
+      return;
     }
 
     // Set suggested binding if we're hovering with an arrow tool
@@ -7923,7 +7970,11 @@ class App extends React.Component<AppProps, AppState> {
         (!this.state.selectedLinearElement ||
           this.state.selectedLinearElement.hoverPointIndex === -1) &&
         this.state.openDialog?.name !== "elementLinkSelector" &&
-        !(selectedElements.length === 1 && isElbowArrow(selectedElements[0])) &&
+        !(
+          selectedElements.length === 1 &&
+          (isElbowArrow(selectedElements[0]) ||
+            selectedElements[0].type === "peculiar")
+        ) &&
         // HACK: Disable transform handles for linear elements on mobile until a
         // better way of showing them is found
         !(
@@ -8039,6 +8090,16 @@ class App extends React.Component<AppProps, AppState> {
         this.cursor.set(CURSOR_TYPE.AUTO);
       } else if (isOverScrollBar) {
         this.cursor.set(CURSOR_TYPE.AUTO);
+      } else if (
+        selectedElements.length === 1 &&
+        selectedElements[0].type === "peculiar"
+      ) {
+        this.handleHoverPeculiarElement(
+          selectedElements[0],
+          hitElement,
+          scenePointerX,
+          scenePointerY,
+        );
       } else if (
         // if using cmd/ctrl, we're not dragging
         !event[KEYS.CTRL_OR_CMD] &&
@@ -8263,6 +8324,31 @@ class App extends React.Component<AppProps, AppState> {
       this.cursor.set(CURSOR_TYPE.AUTO);
     }
   }
+
+  private handleHoverPeculiarElement = (
+    selectedElement: ExcalidrawPeculiarElement,
+    hitElement: ExcalidrawElement | null,
+    scenePointerX: number,
+    scenePointerY: number,
+  ) => {
+    const hoverState = getPeculiarElement(
+      selectedElement.peculiarType,
+    ).hoverOverElement(
+      selectedElement,
+      hitElement,
+      scenePointerX,
+      scenePointerY,
+    );
+    if (hoverState.cursor) {
+      this.cursor.set(hoverState.cursor);
+    }
+    this.setState({
+      peculiar: {
+        ...this.state.peculiar,
+        hoverState,
+      },
+    });
+  };
 
   private handleCanvasPointerDown = (
     event: React.PointerEvent<HTMLElement>,
@@ -8706,6 +8792,11 @@ class App extends React.Component<AppProps, AppState> {
       );
     } else if (this.state.activeTool.type === "autoshape") {
       this.drawShape.handlePointerDown(pointerDownState);
+    } else if (this.state.activeTool.type === "peculiar") {
+      this.handlePeculiarElementOnPointDown(
+        this.state.activeTool.customType,
+        pointerDownState,
+      );
     } else if (
       this.state.activeTool.type !== "eraser" &&
       this.state.activeTool.type !== "hand" &&
@@ -9924,6 +10015,10 @@ class App extends React.Component<AppProps, AppState> {
     if (this.state.multiElement) {
       const { multiElement, selectedLinearElement } = this.state;
 
+      if (!isLinearElement(multiElement)) {
+        return;
+      }
+
       invariant(
         selectedLinearElement,
         "selectedLinearElement is expected to be set",
@@ -10241,6 +10336,50 @@ class App extends React.Component<AppProps, AppState> {
       this.state.currentItemStrokeWidthKey,
     );
   }
+
+  private handlePeculiarElementOnPointDown = (
+    peculiarType: string,
+    pointerDownState: PointerDownState,
+  ): void => {
+    const state = getPeculiarTool(peculiarType).handlePointerDown(
+      pointerDownState,
+      this.state,
+      this.scene.getNonDeletedElementsMap(),
+    );
+    state.elements.forEach((elementWithIndex) => {
+      elementWithIndex.index >= 0
+        ? this.scene.insertElementsAtIndex(
+            [elementWithIndex.element],
+            elementWithIndex.index,
+          )
+        : this.scene.insertElement(elementWithIndex.element);
+    });
+    this.triggerRender(true);
+    this.setState({
+      multiElement: state.multiElement,
+      newElement: state.newElement,
+    });
+  };
+
+  private mutatePeculiarElementOnPointMove = (
+    newElement: NonDeleted<ExcalidrawPeculiarElement>,
+    pointerDownState: PointerDownState,
+    event: PointerEvent,
+  ): void => {
+    if (this.state.activeTool.type === "peculiar") {
+      getPeculiarTool(this.state.activeTool.customType).handlePointerMove(
+        newElement,
+        this.scene.getNonDeletedElementsMap(),
+        pointerDownState,
+        event,
+        this.state,
+      );
+      this.triggerRender(true);
+      this.setState({
+        newElement,
+      });
+    }
+  };
 
   private createGenericElementOnPointerDown = (
     elementType: ExcalidrawGenericElement["type"] | "embeddable",
@@ -11185,6 +11324,12 @@ class App extends React.Component<AppProps, AppState> {
               linearElementEditor,
             )!,
           });
+        } else if (newElement.type === "peculiar") {
+          this.mutatePeculiarElementOnPointMove(
+            newElement,
+            pointerDownState,
+            event,
+          );
         } else {
           pointerDownState.lastCoords.x = pointerCoords.x;
           pointerDownState.lastCoords.y = pointerCoords.y;
@@ -11535,7 +11680,8 @@ class App extends React.Component<AppProps, AppState> {
           this.state.newElement &&
           this.state.multiElement &&
           isLinearElement(this.state.newElement) &&
-          this.state.selectedLinearElement
+          this.state.selectedLinearElement &&
+          this.state.multiElement.type !== "peculiar"
         ) {
           const { multiElement } = this.state;
 
@@ -11717,6 +11863,23 @@ class App extends React.Component<AppProps, AppState> {
         });
       }
 
+      if (newElement?.type === "peculiar" && activeTool.type === "peculiar") {
+        const stateUpdate = getPeculiarTool(
+          activeTool.customType,
+        ).handlePointerUp(
+          newElement,
+          pointerDownState,
+          this.state,
+          this.scene.getNonDeletedElements(),
+        ) as AppState;
+        this.triggerRender(true);
+        // TODO: store state;
+        this.setState({
+          ...stateUpdate,
+        });
+        return;
+      }
+
       if (
         activeTool.type !== "selection" &&
         newElement &&
@@ -11817,6 +11980,21 @@ class App extends React.Component<AppProps, AppState> {
             },
           );
           let nextElements = this.scene.getElementsMapIncludingDeleted();
+
+          if (
+            selectedElements.length === 1 &&
+            selectedElements[0].type === "peculiar"
+          ) {
+            getPeculiarElement(
+              selectedElements[0].peculiarType,
+            ).handleMovingEnd(
+              selectedElements[0],
+              pointerDownState,
+              this.state,
+              this.scene.getNonDeletedElementsMap(),
+            );
+            this.triggerRender(true);
+          }
 
           const updateGroupIdsAfterEditingGroup = (
             elements: ExcalidrawElement[],

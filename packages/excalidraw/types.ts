@@ -35,6 +35,7 @@ import type {
   BindMode,
   ExcalidrawTextElement,
   StrokeVariability,
+  ExcalidrawPeculiarElement,
 } from "@excalidraw/element/types";
 
 import type {
@@ -50,6 +51,13 @@ import type {
   EphemeralIncrement,
 } from "@excalidraw/element";
 import type { GlobalPoint } from "@excalidraw/math";
+
+import type {
+  ExcalidrawPeculiarElementImplementation,
+  ExcalidrawPeculiarToolImplementation,
+} from "@excalidraw/custom";
+
+import type { PeculiarAction } from "@excalidraw/custom";
 
 import type { Action } from "./actions/types";
 import type { Spreadsheet } from "./charts";
@@ -160,17 +168,22 @@ export type ToolType =
   | "magicframe"
   | "embeddable"
   | "laser"
-  | "autoshape";
+  | "autoshape"
+  | "peculiar";
 
 export type ElementOrToolType = ExcalidrawElementType | ToolType | "custom";
 
 export type ActiveTool =
   | {
-      type: ToolType;
+      type: Exclude<ToolType, "peculiar">;
       customType: null;
     }
   | {
       type: "custom";
+      customType: string;
+    }
+  | {
+      type: "peculiar";
       customType: string;
     };
 
@@ -250,6 +263,8 @@ export type InteractiveCanvasAppState = Readonly<
     shouldCacheIgnoreZoom: AppState["shouldCacheIgnoreZoom"];
     exportScale: AppState["exportScale"];
     currentItemArrowType: AppState["currentItemArrowType"];
+    // Custom properties for peculiar elements/tools
+    peculiar: AppState["peculiar"];
   }
 >;
 
@@ -339,7 +354,10 @@ export interface AppState {
    * multiElement is for multi-point linear element that's created by clicking as opposed to dragging
    * - when set and present, the editor will handle linear element creation logic accordingly
    */
-  multiElement: NonDeleted<ExcalidrawLinearElement> | null;
+  multiElement:
+    | NonDeleted<ExcalidrawLinearElement>
+    | NonDeleted<ExcalidrawPeculiarElement>
+    | null;
   /**
    * decoupled from newElement, dragging selection only creates selectionElement
    * - set on pointer down, updated during pointer move
@@ -528,6 +546,8 @@ export interface AppState {
   // a drag operation (like pointer position vs bindable element) but needed
   // globally for calculating the binding strategy
   bindMode: BindMode;
+
+  peculiar: Record<string, any>;
 }
 
 export type SearchMatch = {
@@ -868,8 +888,9 @@ export interface ExcalidrawProps {
    * activation opens the file picker).
    */
   activeTool?:
-    | { type: Exclude<ToolType, "image"> }
-    | { type: "custom"; customType: string };
+    | { type: Exclude<Exclude<ToolType, "image">, "peculiar"> }
+    | { type: "custom"; customType: string }
+    | { type: "peculiar"; customType: string };
   zenModeEnabled?: boolean;
   gridModeEnabled?: boolean;
   objectsSnapModeEnabled?: boolean;
@@ -1260,6 +1281,18 @@ export interface ExcalidrawImperativeAPI {
   ) => UnsubscribeCallback;
   onStateChange: InstanceType<typeof App>["onStateChange"];
   onEvent: InstanceType<typeof App>["onEvent"];
+  registerPeculiarElement: (
+    peculiarType: string,
+    implementation: ExcalidrawPeculiarElementImplementation<any>,
+  ) => void;
+  registerPeculiarAction: (
+    peculiarType: string,
+    action: PeculiarAction,
+  ) => void;
+  registerPeculiarTool: (
+    toolType: string,
+    tool: ExcalidrawPeculiarToolImplementation,
+  ) => void;
 }
 
 export type FrameNameBounds = {
