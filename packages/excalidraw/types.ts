@@ -948,6 +948,8 @@ export interface ExcalidrawProps {
       signal: AbortSignal;
     },
   ) => MaybePromise<void> | AsyncGenerator<OnExportProgress, void>;
+  additionalTranslationFolder?: string[];
+  defaultAdditionalTranslations?: JSONValue;
 }
 
 export type SceneData = {
