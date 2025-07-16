@@ -6,6 +6,8 @@ import { useAtomValue, editorJotaiStore, atom } from "./editor-jotai";
 import fallbackLangData from "./locales/en.json";
 import percentages from "./locales/percentages.json";
 
+import type { JSONValue } from "./types";
+
 const COMPLETION_THRESHOLD = 85;
 
 export interface Language {
@@ -89,7 +91,14 @@ if (isDevEnv()) {
 let currentLang: Language = defaultLang;
 let currentLangData = {};
 
-export const setLanguage = async (lang: Language) => {
+export const addToFallbackLangData = (data: JSONValue) => {
+  Object.assign(fallbackLangData, data);
+};
+
+export const setLanguage = async (
+  lang: Language,
+  additionalFoldersToCheck?: string[],
+) => {
   currentLang = lang;
   document.documentElement.dir = currentLang.rtl ? "rtl" : "ltr";
   document.documentElement.lang = currentLang.code;
@@ -98,7 +107,21 @@ export const setLanguage = async (lang: Language) => {
     currentLangData = {};
   } else {
     try {
-      currentLangData = await import(`./locales/${currentLang.code}.json`);
+      currentLangData = (await import(`./locales/${currentLang.code}.json`))
+        .default;
+      for (const folder of additionalFoldersToCheck || []) {
+        try {
+          const data = await import(
+            /* @vite-ignore */ `${folder}/${currentLang.code}.json`
+          );
+          Object.assign(currentLangData, data.default);
+        } catch (error: any) {
+          console.error(
+            `Failed to load additional translations from ${folder} for ${currentLang.code}:`,
+            error.message,
+          );
+        }
+      }
     } catch (error: any) {
       console.error(`Failed to load language ${lang.code}:`, error.message);
       currentLangData = fallbackLangData;
@@ -125,7 +148,7 @@ const findPartsForData = (data: any, parts: string[]) => {
 };
 
 export const t = (
-  path: NestedKeyOf<typeof fallbackLangData>,
+  path: NestedKeyOf<typeof fallbackLangData> | string,
   replacement?: { [key: string]: string | number } | null,
   fallback?: string,
 ) => {
