@@ -385,14 +385,22 @@ export const isSelectionLikeTool = (type: ToolType | "custom") => {
 export const updateActiveTool = (
   appState: Pick<AppState, "activeTool">,
   data: ((
-    | {
-        type: ToolType;
-      }
+    | { type: Exclude<ToolType, "peculiar"> }
+    | { type: "peculiar"; customType: string }
     | { type: "custom"; customType: string }
   ) & { locked?: boolean; fromSelection?: boolean }) & {
     lastActiveToolBeforeEraser?: ActiveTool | null;
   },
 ): AppState["activeTool"] => {
+  if (data.type === "peculiar") {
+    return {
+      ...appState.activeTool,
+      type: "peculiar",
+      customType: data.customType,
+      locked: data.locked ?? appState.activeTool.locked,
+    };
+  }
+
   if (data.type === "custom") {
     return {
       ...appState.activeTool,

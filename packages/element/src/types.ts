@@ -174,6 +174,12 @@ export type ExcalidrawFrameLikeElement =
   | ExcalidrawFrameElement
   | ExcalidrawMagicFrameElement;
 
+export type ExcalidrawPeculiarElement = _ExcalidrawElementBase &
+  Readonly<{
+    type: "peculiar";
+    peculiarType: string;
+  }>;
+
 /**
  * These are elements that don't have any additional properties.
  */
@@ -213,7 +219,8 @@ export type ExcalidrawElement =
   | ExcalidrawFrameElement
   | ExcalidrawMagicFrameElement
   | ExcalidrawIframeElement
-  | ExcalidrawEmbeddableElement;
+  | ExcalidrawEmbeddableElement
+  | ExcalidrawPeculiarElement;
 
 export type ExcalidrawNonSelectionElement = Exclude<
   ExcalidrawElement,
@@ -265,7 +272,8 @@ export type ExcalidrawBindableElement =
   | ExcalidrawIframeElement
   | ExcalidrawEmbeddableElement
   | ExcalidrawFrameElement
-  | ExcalidrawMagicFrameElement;
+  | ExcalidrawMagicFrameElement
+  | ExcalidrawPeculiarElement;
 
 export type ExcalidrawTextContainer =
   | ExcalidrawRectangleElement
